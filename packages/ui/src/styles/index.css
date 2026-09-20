@@ -1,0 +1,12 @@
+/* Structure + components. Pair with exactly one theme:
+ *   @import "@omarchy/ui/styles.css";
+ *   @import "@omarchy/ui/themes/lupine.css";
+ */
+@import "./tokens.css";
+@import "./base.css";
+@import "./components/stat.css";
+@import "./components/chart.css";
+@import "./components/heatmap.css";
+@import "./components/list.css";
+@import "./components/shell.css";
+@import "./components/tooltip.css";

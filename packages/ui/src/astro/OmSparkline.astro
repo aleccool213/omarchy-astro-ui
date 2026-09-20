@@ -1,0 +1,31 @@
+---
+import { buildChart } from "../core/series.ts";
+
+export interface Props {
+  values: (number | null)[];
+  width?: number;
+  height?: number;
+  label?: string;
+  class?: string;
+}
+
+const { values, width = 80, height = 28, label, class: className } = Astro.props;
+
+const geo = buildChart(
+  [{ key: "spark", label: label ?? "trend", points: values.map((value, i) => ({ label: String(i), value })) }],
+  { spark: true, width, height },
+);
+---
+
+{!geo.empty && geo.series[0].segments.length > 0 && (
+  <svg
+    class:list={["om-spark", className]}
+    viewBox={`0 0 ${width} ${height}`}
+    style={`--om-spark-w:${width}px;--om-spark-h:${height}px`}
+    role={label ? "img" : "presentation"}
+    aria-label={label}
+    aria-hidden={label ? undefined : "true"}
+  >
+    {geo.series[0].segments.map((d) => <path class="om-spark__line" d={d} />)}
+  </svg>
+)}

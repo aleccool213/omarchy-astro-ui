@@ -1,0 +1,114 @@
+---
+import Story from "../layouts/Story.astro";
+import Demo from "../components/Demo.astro";
+import OmDataList from "@omarchy/ui/astro/OmDataList.astro";
+import OmSparkline from "@omarchy/ui/astro/OmSparkline.astro";
+import { sessions, accounts, formatCAD } from "../data/samples";
+import { formatDateLong } from "@omarchy/ui/core";
+---
+
+<Story
+  title="OmDataList"
+  kicker="component 4 of 5"
+  intro="Rows are yours; the chrome, empty state and pagination are the library's. Three densities cover a ledger, a logbook and a blog index. Nothing here existed in any app before — this is the new component the pattern was built to make easy."
+>
+  <div class="sb-note" style="margin-bottom:2rem">
+    <p style="margin:0">The Astro version paginates by hiding rows the server already rendered, so
+    <strong>the full list is still readable with JavaScript off</strong> and the pager only appears once it
+    can work. The React version uses real state instead — there is already a render pass there. Both call the
+    same <code>paginate()</code> from core.</p>
+  </div>
+
+  <Demo
+    title="density=&quot;stack&quot; — 57 sessions, 8 per page"
+    note="Pass <code>syncUrl</code> and the page is mirrored into <code>?page=</code>, so a reload and the back button keep their place."
+    code={`<OmDataList title="Logbook" density="stack" perPage={8} total={sessions.length} syncUrl>
+  {sessions.map((s) => (
+    <article class="om-list__row">…</article>
+  ))}
+</OmDataList>`}
+  >
+    <OmDataList title="Logbook" density="stack" perPage={8} total={sessions.length} syncUrl>
+      {sessions.map((s) => (
+        <article class="om-list__row">
+          <div style="display:flex;justify-content:space-between;gap:1rem;align-items:baseline;flex-wrap:wrap">
+            <div>
+              <div style="font-weight:600">{s.description}</div>
+              <div style="color:var(--om-fg-muted);font-size:var(--om-text-xs)">{formatDateLong(s.date)}</div>
+            </div>
+            <div style="text-align:right;font-variant-numeric:tabular-nums">
+              <div style="font-weight:600">{s.meters.toLocaleString("en-CA")} m</div>
+              <div style="color:var(--om-fg-muted);font-size:var(--om-text-xs)">{s.minutes} min · {s.split} /500m</div>
+            </div>
+          </div>
+        </article>
+      ))}
+    </OmDataList>
+  </Demo>
+
+  <Demo
+    title="density=&quot;table&quot; — a ledger"
+    note="For a table you supply the <code>head</code> slot and <code>&lt;tr class=&quot;om-list__row&quot;&gt;</code> rows. The <code>om-num</code> class right-aligns and tabularises a figure column."
+    code={`<OmDataList density="table" perPage={6} total={accounts.length}>
+  <tr slot="head">
+    <th>Account</th><th>Kind</th><th class="om-num">Value</th><th></th>
+  </tr>
+  {accounts.map((a) => <tr class="om-list__row">…</tr>)}
+</OmDataList>`}
+  >
+    <OmDataList title="Accounts" density="table" perPage={6} total={accounts.length}>
+      <tr slot="head">
+        <th scope="col">Account</th>
+        <th scope="col">Kind</th>
+        <th scope="col" class="om-num">Value</th>
+        <th scope="col"><span class="om-visually-hidden">Trend</span></th>
+      </tr>
+      {accounts.map((a) => (
+        <tr class="om-list__row">
+          <td>
+            <div style="font-weight:500">{a.name}</div>
+            <div style="color:var(--om-fg-muted);font-size:var(--om-text-xs)">{a.institution}</div>
+          </td>
+          <td style="color:var(--om-fg-muted);font-size:var(--om-text-sm)">{a.kind}</td>
+          <td class="om-num">
+            <div style="font-weight:500">{formatCAD(a.amount)}</div>
+            <div style={`font-size:var(--om-text-xs);color:${a.change >= 0 ? "var(--om-pos)" : "var(--om-neg)"}`}>
+              {a.change >= 0 ? "▲" : "▼"} {Math.abs(a.change).toFixed(1)}%
+            </div>
+          </td>
+          <td class="om-num" style="color:var(--om-accent)">
+            <OmSparkline values={a.history} label={`${a.name} trend`} />
+          </td>
+        </tr>
+      ))}
+    </OmDataList>
+  </Demo>
+
+  <Demo
+    title="density=&quot;rows&quot; — a post index"
+    note="Hairline separators, no card chrome. This is the shape bigal's post index wants."
+    code={`<OmDataList density="rows" perPage={5} total={posts.length} />`}
+  >
+    <OmDataList density="rows" perPage={5} total={sessions.length} showCount={false}>
+      {sessions.map((s) => (
+        <a class="om-list__row" href="#" style="display:grid;grid-template-columns:7.5rem 1fr;gap:1rem;text-decoration:none;align-items:baseline">
+          <time style="color:var(--om-fg-muted);font-size:var(--om-text-xs)">{formatDateLong(s.date)}</time>
+          <span>{s.description}</span>
+        </a>
+      ))}
+    </OmDataList>
+  </Demo>
+
+  <Demo
+    title="Short list and empty list"
+    note="Below one page the pager removes itself entirely. An empty list gets a dashed placeholder rather than a bare heading."
+    code={`<OmDataList title="Nothing here" total={0} emptyLabel="No sessions yet." />`}
+  >
+    <div class="sb-grid-2">
+      <OmDataList title="Three items" density="rows" perPage={10} total={3}>
+        {sessions.slice(0, 3).map((s) => <div class="om-list__row">{s.description}</div>)}
+      </OmDataList>
+      <OmDataList title="Nothing here" total={0} emptyLabel="No sessions logged yet." />
+    </div>
+  </Demo>
+</Story>

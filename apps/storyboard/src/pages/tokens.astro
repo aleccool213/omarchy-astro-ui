@@ -1,0 +1,94 @@
+---
+import Story from "../layouts/Story.astro";
+import Demo from "../components/Demo.astro";
+
+const semantic = [
+  ["--om-bg", "page background"],
+  ["--om-bg-deep", "behind the page"],
+  ["--om-surface", "cards, tiles, rows"],
+  ["--om-surface-2", "tracks, inactive fills"],
+  ["--om-fg", "primary ink"],
+  ["--om-fg-muted", "secondary ink"],
+  ["--om-fg-subtle", "tertiary ink"],
+  ["--om-line", "hairline borders"],
+  ["--om-line-strong", "emphasised borders"],
+  ["--om-accent", "brand accent"],
+  ["--om-accent-ink", "ink on accent"],
+  ["--om-pos", "gain"],
+  ["--om-neg", "loss"],
+  ["--om-warn", "warning"],
+  ["--om-dot", "pixel field"],
+];
+
+const series = [1, 2, 3, 4, 5, 6];
+const ramp = [0, 1, 2, 3, 4];
+---
+
+<Story
+  title="Tokens & palettes"
+  kicker="the contract"
+  intro="Every component is written against these names and nothing else. A theme fills them in; swapping the theme swaps the look without touching a component. Switch the family in the header to see both."
+>
+  <Demo title="Semantic tokens" plain code={`background: var(--om-surface);
+color: var(--om-fg-muted);
+border: 1px solid var(--om-line);`}>
+    <ul class="sb-swatches">
+      {semantic.map(([name, note]) => (
+        <li class="sb-swatch">
+          <div class="sb-swatch__chip" style={`background:var(${name})`}></div>
+          <div class="sb-swatch__meta">
+            <div>{note}</div>
+            <code>{name}</code>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </Demo>
+
+  <Demo
+    title="Categorical series slots"
+    note="Assigned in fixed order and never cycled. The order is the colourblind-safety mechanism, not a mood board — re-ordering them breaks the validated adjacent-pair separation. A seventh series throws rather than reusing slot 1."
+    plain
+    code={`// core/series.ts assigns these; you never pick one by hand
+fill = \`var(--om-series-\${slot})\``}
+  >
+    <ul class="sb-swatches">
+      {series.map((n) => (
+        <li class="sb-swatch">
+          <div class="sb-swatch__chip" style={`background:var(--om-series-${n})`}></div>
+          <div class="sb-swatch__meta"><code>--om-series-{n}</code></div>
+        </li>
+      ))}
+    </ul>
+  </Demo>
+
+  <Demo
+    title="Sequential ramp"
+    note="One hue, monotone lightness, used by the heatmap. Level 0 is a surface tone meaning <em>nothing logged</em>; 1–4 carry magnitude."
+    plain
+    code={`background: var(--om-ramp-3);   /* heatmap level 3 */`}
+  >
+    <ul class="sb-swatches">
+      {ramp.map((n) => (
+        <li class="sb-swatch">
+          <div class="sb-swatch__chip" style={`background:var(--om-ramp-${n})`}></div>
+          <div class="sb-swatch__meta"><code>--om-ramp-{n}</code></div>
+        </li>
+      ))}
+    </ul>
+  </Demo>
+
+  <div class="sb-note">
+    <p style="margin-top:0"><strong>Both palettes are validated, not eyeballed.</strong> Every categorical set
+    clears the lightness band, the chroma floor, adjacent-pair separation under simulated protanopia and
+    deuteranopia, the normal-vision floor and contrast against its own surface:</p>
+    <ul style="margin:0 0 .75rem;padding-left:1.1rem;line-height:1.7">
+      <li>lupine light — worst adjacent CVD ΔE 9.1, normal-vision ΔE 19.6</li>
+      <li>lupine dark — worst adjacent CVD ΔE 8.4, normal-vision ΔE 19.3</li>
+      <li>tokyo-night — worst adjacent CVD ΔE 14.8, normal-vision ΔE 22.9, all slots ≥ 3:1</li>
+    </ul>
+    <p style="margin-bottom:0">Three lupine light slots sit below 3:1 on <code>#fafafa</code>. That is legal
+    only with a relief channel, which is why every multi-series chart ships a legend, direct labels and a table
+    view. If you re-step a colour, re-run the validator before committing it.</p>
+  </div>
+</Story>

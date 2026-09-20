@@ -1,0 +1,20 @@
+{
+  "name": "omarchy-ui-workspace",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=@omarchy/storyboard",
+    "build": "npm run build --workspace=@omarchy/storyboard",
+    "preview": "npm run preview --workspace=@omarchy/storyboard",
+    "check": "npm run check --workspace=@omarchy/storyboard",
+    "test": "node --test packages/ui/src/core/*.test.ts",
+    "typecheck": "npm run typecheck --workspace=@omarchy/ui"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}

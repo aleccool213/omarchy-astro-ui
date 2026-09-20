@@ -1,0 +1,76 @@
+/* ---------------------------------------------------------------------------
+ * @omarchy/ui — token contract
+ *
+ * Structural tokens live here. COLOUR tokens are supplied by a theme file
+ * (themes/lupine.css, themes/tokyo-night.css) so the same components can wear
+ * a different palette per app. Every component in this library is written
+ * against the names below and nothing else.
+ *
+ * tokens.css lives in the `om-tokens` cascade layer. A theme file is
+ * unlayered, so it always beats these defaults no matter which stylesheet the
+ * bundler emits last — that is what lets tokyo-night override --om-font-display
+ * and --om-page without fighting import order.
+ *
+ * Colour contract a theme must fill:
+ *   --om-bg --om-bg-deep --om-surface --om-surface-2
+ *   --om-fg --om-fg-muted --om-fg-subtle
+ *   --om-line --om-line-strong
+ *   --om-accent --om-accent-ink --om-accent-soft
+ *   --om-pos --om-neg --om-warn --om-focus --om-dot
+ *   --om-series-1 … --om-series-6      (categorical, fixed order, never cycled)
+ *   --om-ramp-0 … --om-ramp-4          (sequential; 0 = "no data", 1..4 = magnitude)
+ *   --om-toggle-display                (none on a single-mode theme)
+ * ------------------------------------------------------------------------- */
+
+@layer om-tokens {
+:root {
+  /* Type */
+  --om-font-ui: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+  --om-font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+  --om-font-display: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+
+  --om-text-xs: 0.7rem;
+  --om-text-sm: 0.8rem;
+  --om-text-base: 0.95rem;
+  --om-text-lg: 1.05rem;
+  --om-text-xl: 1.35rem;
+  --om-text-2xl: 1.7rem;
+
+  /* Omarchy is square. This is a system parameter, not an oversight. */
+  --om-radius: 0px;
+
+  /* Space */
+  --om-space-1: 0.25rem;
+  --om-space-2: 0.4rem;
+  --om-space-3: 0.65rem;
+  --om-space-4: 0.9rem;
+  --om-space-5: 1.25rem;
+  --om-space-6: 2rem;
+
+  /* Layout */
+  --om-measure: 48rem;
+  --om-page: 52rem;
+  --om-gutter: 1.25rem;
+  --om-nav-h: 3.5rem;
+
+  /* Texture — the pixel field shared by every omarchy surface */
+  --om-dot-size: 18px;
+  --om-dot-radius: 1.35px;
+
+  /* Motion */
+  --om-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --om-duration: 150ms;
+
+  /* Charts */
+  --om-chart-grid-dash: 3 6;
+  --om-chart-line-w: 2px;
+  --om-chart-marker: 8px;
+
+  /* A single-mode theme sets this to `none`; the component falls back to
+   * inline-flex when no theme sets it at all. */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --om-duration: 0ms; }
+}
+}

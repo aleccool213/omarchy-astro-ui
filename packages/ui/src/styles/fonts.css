@@ -1,0 +1,4 @@
+/* One canonical font import. Each app was hand-rolling its own <link> with a
+ * different weight set; this is the single source. Import it, or self-host the
+ * same two families and skip this file. */
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap");

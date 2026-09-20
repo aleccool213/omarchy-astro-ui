@@ -1,0 +1,83 @@
+---
+import { buildHeatmap, type HeatmapOptions } from "../core/heatmap.ts";
+import { formatDateLong, formatNumber, type NumberFormat } from "../core/format.ts";
+
+export interface Props extends HeatmapOptions {
+  values: Record<string, number> | Map<string, number>;
+  /** Singular/plural noun for the tooltip, e.g. ["workout", "workouts"]. */
+  noun?: [string, string];
+  format?: NumberFormat;
+  caption?: string;
+  class?: string;
+}
+
+const {
+  values,
+  noun = ["entry", "entries"],
+  format = "int",
+  caption,
+  class: className,
+  ...options
+} = Astro.props;
+
+const geo = buildHeatmap(values, options);
+const DOW = ["M", "", "W", "", "F", "", "S"];
+
+function tip(date: string, value: number): string {
+  if (value <= 0) return `${formatDateLong(date)} · nothing logged`;
+  const label = value === 1 ? noun[0] : noun[1];
+  return `${formatDateLong(date)} · ${formatNumber(value, format)} ${label}`;
+}
+---
+
+<div class:list={["om-heatmap", className]}>
+  <div class="om-heatmap__frame" style={`--om-weeks:${geo.weeks.length}`}>
+    <div class="om-heatmap__dow" aria-hidden="true">
+      <span></span>
+      {DOW.map((d) => <span>{d}</span>)}
+    </div>
+    <div class="om-heatmap__panel">
+      <div class="om-heatmap__months" style={`--om-weeks:${geo.weeks.length}`} aria-hidden="true">
+        {geo.weeks.map((_, i) => {
+          const month = geo.months.find((m) => m.column === i);
+          return <span>{month ? month.label : ""}</span>;
+        })}
+      </div>
+      <div class="om-heatmap__grid" role="grid" aria-label={caption ?? "Activity calendar"}>
+        {geo.weeks.map((week) =>
+          week.map((cell) =>
+            cell.blank ? (
+              <div class="om-heatmap__cell" data-blank="true" data-level="0" role="presentation"></div>
+            ) : (
+              <button
+                type="button"
+                class="om-heatmap__cell"
+                data-level={cell.level}
+                data-om-tip={tip(cell.date, cell.value)}
+                aria-label={tip(cell.date, cell.value)}
+              ></button>
+            ),
+          ),
+        )}
+      </div>
+    </div>
+  </div>
+
+  <div class="om-heatmap__foot">
+    <span>
+      {formatNumber(geo.total, format)} {geo.total === 1 ? noun[0] : noun[1]} · {geo.activeDays} active {geo.activeDays === 1 ? "day" : "days"}
+    </span>
+    <span class="om-heatmap__legend">
+      <span>Less</span>
+      {[0, 1, 2, 3, 4].map((l) => <span class="om-heatmap__cell" data-level={l} aria-hidden="true"></span>)}
+      <span>More</span>
+    </span>
+  </div>
+  {caption && <p class="om-chart__note">{caption}</p>}
+</div>
+
+<script>
+  import { mountTips } from "../client/hover.ts";
+  mountTips();
+  document.addEventListener("astro:page-load", () => mountTips());
+</script>

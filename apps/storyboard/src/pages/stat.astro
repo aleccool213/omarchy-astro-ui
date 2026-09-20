@@ -1,0 +1,68 @@
+---
+import Story from "../layouts/Story.astro";
+import Demo from "../components/Demo.astro";
+import OmStat from "@omarchy/ui/astro/OmStat.astro";
+import OmStatGrid from "@omarchy/ui/astro/OmStatGrid.astro";
+import OmSparkline from "@omarchy/ui/astro/OmSparkline.astro";
+import { accounts } from "../data/samples";
+---
+
+<Story
+  title="OmStat"
+  kicker="component 1 of 5"
+  intro="The simplest component in the library, and the one that sets the conventions every other component follows: token-driven CSS, an om- prefixed class contract, and identical markup from the Astro and React renderers."
+>
+  <Demo
+    title="Stat grid"
+    note="Hover or focus a <code>?</code> to see the shared tooltip — the same floating element the chart and heatmap use."
+    code={`---
+import OmStat from "@omarchy/ui/astro/OmStat.astro";
+import OmStatGrid from "@omarchy/ui/astro/OmStatGrid.astro";
+---
+<OmStatGrid cols={2} colsSm={3}>
+  <OmStat label="Steps / day" value={9240} format="k" hint="Mean over the last 7 days." />
+  <OmStat label="Resting HR" value={58} unit="bpm" delta={-1.4} goodDirection="down" />
+</OmStatGrid>`}
+  >
+    <OmStatGrid cols={2} colsSm={3}>
+      <OmStat label="Steps / day" value={9240} format="k" hint="Mean over the last 7 days, Apple Watch." />
+      <OmStat label="Sleep" value={7.1} format="fixed1" unit="h" delta={0.4} />
+      <OmStat label="Resting HR" value={58} unit="bpm" delta={-1.4} goodDirection="down" hint="Lower is better, so a fall renders green." />
+      <OmStat label="HRV" value={52} unit="ms" delta={3.1} />
+      <OmStat label="Exercise" value={312} unit="min" delta={-18} deltaFormat="int" goodDirection="up" />
+      <OmStat label="Workouts" value={14} hint="Sessions logged this month." />
+    </OmStatGrid>
+  </Demo>
+
+  <Demo
+    title="Delta direction is the app's call"
+    note="<code>goodDirection</code> decides the colour, not the sign. A falling resting HR is good; falling steps are not. The arrow always follows the sign."
+    code={`<OmStat label="Resting HR" value={58} delta={-1.4} goodDirection="down" />
+<OmStat label="Steps" value={6100} delta={-1200} goodDirection="up" />`}
+  >
+    <OmStatGrid cols={2} colsSm={4}>
+      <OmStat label="Resting HR" value={58} unit="bpm" delta={-1.4} goodDirection="down" />
+      <OmStat label="Steps" value={6100} format="k" delta={-1200} deltaFormat="k" goodDirection="up" />
+      <OmStat label="Spend" value={1840} format="compact" delta={-210} deltaFormat="int" goodDirection="down" />
+      <OmStat label="Flat" value={100} delta={0} deltaFormat="int" />
+    </OmStatGrid>
+  </Demo>
+
+  <Demo
+    title="Edge cases"
+    note="Missing values render an en dash rather than <code>NaN</code> or an empty tile, and a stat can carry a sparkline in its default slot."
+    code={`<OmStat label="Sleep" value={null} unit="h" />
+
+<OmStat label="Balance" value={96450} format="compact">
+  <OmSparkline values={history} class="om-stat__spark" />
+</OmStat>`}
+  >
+    <OmStatGrid cols={2} colsSm={3}>
+      <OmStat label="No data" value={null} unit="h" hint="A null value renders an en dash." />
+      <OmStat label="Long label that wraps onto a second line" value={42} />
+      <OmStat label="Balance" value={96450} format="compact">
+        <OmSparkline values={accounts[1].history} class="om-stat__spark" label="Balance trend" />
+      </OmStat>
+    </OmStatGrid>
+  </Demo>
+</Story>

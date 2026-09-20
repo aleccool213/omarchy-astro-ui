@@ -1,0 +1,76 @@
+---
+export interface Props {
+  title?: string;
+  /** "stack" = cards, "rows" = hairline-separated, "table" = caller gives <tr>s. */
+  density?: "stack" | "rows" | "table";
+  perPage?: number;
+  /** Row count, for the SSR range label before the client script runs. */
+  total?: number;
+  emptyLabel?: string;
+  /** Hide the "n items" badge without hiding the title. */
+  showCount?: boolean;
+  /** Mirror the page into ?page= so a reload and the back button keep their place. */
+  syncUrl?: boolean;
+  pageParam?: string;
+  class?: string;
+}
+
+const {
+  title,
+  density = "stack",
+  perPage = 10,
+  total,
+  emptyLabel = "Nothing to show.",
+  showCount = true,
+  syncUrl = false,
+  pageParam = "page",
+  class: className,
+} = Astro.props;
+
+const isEmpty = total === 0;
+---
+
+<section
+  class:list={["om-list", `om-list--${density}`, className]}
+  data-om-list
+  data-om-per-page={perPage}
+  data-om-sync-url={String(syncUrl)}
+  data-om-page-param={pageParam}
+>
+  {(title || (showCount && total != null)) && (
+    <header class="om-list__head">
+      {title && <h2 class="om-list__title">{title}</h2>}
+      {showCount && total != null && (
+        <span class="om-list__count">{total} {total === 1 ? "item" : "items"}</span>
+      )}
+    </header>
+  )}
+
+  {isEmpty ? (
+    <p class="om-list__empty"><slot name="empty">{emptyLabel}</slot></p>
+  ) : density === "table" ? (
+    <table class="om-list__table">
+      <thead><slot name="head" /></thead>
+      <tbody class="om-list__rows" data-om-rows><slot /></tbody>
+    </table>
+  ) : (
+    <div class="om-list__rows" data-om-rows><slot /></div>
+  )}
+
+  {/* Hidden until the client script confirms pagination is needed. Without JS
+      every row is already rendered, so nothing is lost. */}
+  <nav class="om-pager" data-om-pager aria-label="Pagination" hidden>
+    <span class="om-pager__range" data-om-range aria-live="polite"></span>
+    <div class="om-pager__controls">
+      <button type="button" class="om-pager__btn" data-om-prev aria-label="Previous page">‹</button>
+      <span class="om-pager__pages" data-om-pages></span>
+      <button type="button" class="om-pager__btn" data-om-next aria-label="Next page">›</button>
+    </div>
+  </nav>
+</section>
+
+<script>
+  import { mountLists } from "../client/list.ts";
+  mountLists();
+  document.addEventListener("astro:page-load", () => mountLists());
+</script>

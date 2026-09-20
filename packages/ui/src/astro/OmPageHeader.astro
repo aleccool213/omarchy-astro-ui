@@ -1,0 +1,61 @@
+---
+import OmThemeToggle from "./OmThemeToggle.astro";
+
+export interface NavItem {
+  href: string;
+  label: string;
+  /** Marks the item current. Omit and the current path decides. */
+  active?: boolean;
+}
+
+export interface Props {
+  title: string;
+  href?: string;
+  nav?: NavItem[];
+  /** Repeat the nav as a bottom dock on small screens (app layouts). */
+  dock?: boolean;
+  themeToggle?: boolean;
+  class?: string;
+}
+
+const { title, href = "/", nav = [], dock = false, themeToggle = true, class: className } = Astro.props;
+
+const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const isActive = (item: NavItem): boolean => {
+  if (item.active !== undefined) return item.active;
+  const target = item.href.split("#")[0].replace(/\/+$/, "") || "/";
+  return target === "/" ? path === "/" : path === target || path.startsWith(`${target}/`);
+};
+---
+
+<header class:list={["om-header", className]}>
+  <div class="om-header__inner">
+    <a class="om-header__mark" href={href}>
+      <slot name="logo" />
+      <span>{title}</span>
+    </a>
+    <div class="om-header__actions">
+      {nav.length > 0 && (
+        <nav class="om-header__nav" aria-label="Primary">
+          {nav.map((item) => (
+            <a href={item.href} aria-current={isActive(item) ? "page" : undefined}>{item.label}</a>
+          ))}
+        </nav>
+      )}
+      <slot name="actions" />
+      {themeToggle && <OmThemeToggle />}
+    </div>
+  </div>
+</header>
+
+{dock && nav.length > 0 && (
+  <nav class="om-dock" aria-label="Primary">
+    <ul>
+      {nav.map((item) => (
+        <li>
+          <a href={item.href} aria-current={isActive(item) ? "page" : undefined}>{item.label}</a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}

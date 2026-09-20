@@ -1,0 +1,130 @@
+.om-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid var(--om-line);
+  background: color-mix(in srgb, var(--om-bg) 90%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.om-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--om-space-3);
+  height: var(--om-nav-h);
+  max-width: var(--om-page);
+  margin: 0 auto;
+  padding: 0 max(var(--om-gutter), env(safe-area-inset-left)) 0 max(var(--om-gutter), env(safe-area-inset-right));
+}
+
+.om-header__mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--om-fg);
+  font-family: var(--om-font-display);
+  font-size: var(--om-text-lg);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.om-header__mark:hover { text-decoration: none; }
+.om-header__logo { width: 2rem; height: 2rem; display: block; }
+
+.om-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--om-space-1);
+}
+
+.om-header__nav { display: none; align-items: center; }
+
+@media (min-width: 768px) {
+  .om-header__nav { display: flex; }
+}
+
+.om-header__nav a {
+  display: inline-flex;
+  align-items: center;
+  height: 2.25rem;
+  padding: 0 var(--om-space-3);
+  color: var(--om-fg);
+  font-size: var(--om-text-sm);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.om-header__nav a:hover { background: var(--om-surface); }
+
+.om-header__nav a[aria-current="page"] {
+  background: var(--om-accent);
+  color: var(--om-accent-ink);
+}
+
+/* Mobile dock — the bottom bar health-board and split-log both grew. */
+.om-dock {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 30;
+  border-top: 1px solid var(--om-line);
+  background: color-mix(in srgb, var(--om-bg) 95%, transparent);
+  backdrop-filter: blur(12px);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (min-width: 768px) {
+  .om-dock { display: none; }
+}
+
+.om-dock ul {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.om-dock a {
+  display: flex;
+  min-height: var(--om-nav-h);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  color: var(--om-fg-muted);
+  font-size: 11px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.om-dock a[aria-current="page"] { color: var(--om-accent); }
+
+.om-theme-toggle {
+  display: var(--om-toggle-display, inline-flex);
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--om-line);
+  border-radius: var(--om-radius);
+  background: var(--om-surface);
+  color: var(--om-fg);
+  font: 600 var(--om-text-xs) / 1 var(--om-font-ui);
+  cursor: pointer;
+}
+
+.om-theme-toggle:hover { border-color: var(--om-line-strong); }
+
+.om-shell {
+  max-width: var(--om-page);
+  margin: 0 auto;
+  padding: var(--om-space-5) max(var(--om-gutter), env(safe-area-inset-left))
+    max(6rem, calc(env(safe-area-inset-bottom) + 5rem)) max(var(--om-gutter), env(safe-area-inset-right));
+}
+
+@media (min-width: 768px) {
+  .om-shell { padding-bottom: var(--om-space-6); }
+}

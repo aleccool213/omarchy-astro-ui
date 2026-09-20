@@ -1,0 +1,109 @@
+---
+import Story from "../layouts/Story.astro";
+import Demo from "../components/Demo.astro";
+import OmTimeSeriesChart from "@omarchy/ui/astro/OmTimeSeriesChart.astro";
+import OmSparkline from "@omarchy/ui/astro/OmSparkline.astro";
+import { steps, sleep, restingHr, weeklyVolume, allocation, accounts } from "../data/samples";
+---
+
+<Story
+  title="OmTimeSeriesChart"
+  kicker="component 2 of 5"
+  intro="One geometry engine behind line, area, bar and sparkline. The maths lives in @omarchy/ui/core as pure functions, so the Astro and React renderers draw identical numbers and a fix lands everywhere at once."
+>
+  <div class="sb-note" style="margin-bottom:2rem">
+    <p style="margin-top:0"><strong>Hover the plot</strong> for a crosshair and tooltip. The chart is also
+    focusable: tab to it and use ← → to step through columns, Home/End to jump, Esc to dismiss.</p>
+    <p style="margin-bottom:0">Every chart carries a collapsed <strong>table view</strong>. It is the
+    screen-reader fallback and it is also the contrast relief the light palette requires — three of the six
+    light categorical slots sit below 3:1 on <code>#fafafa</code>, which is legal only when the values are
+    readable another way.</p>
+  </div>
+
+  <Demo
+    title="Line — a single series needs no legend"
+    note="The title names the series, so a legend box would be noise. The axis is zoomed to the data rather than forced to zero: that is the point of a line chart."
+    code={`<OmTimeSeriesChart
+  title="Steps per day"
+  unit="steps"
+  format="k"
+  series={[{ key: "steps", label: "Steps", points: steps }]}
+/>`}
+  >
+    <OmTimeSeriesChart title="Steps per day" unit="steps" format="k" series={[{ key: "steps", label: "Steps", points: steps }]} />
+  </Demo>
+
+  <Demo
+    title="Gaps stay gaps"
+    note="Week 6 logged no sleep. The line breaks rather than interpolating across data that does not exist, and the tooltip says <em>no data</em> instead of inventing a number."
+    code={`// a null value ends the run instead of bridging it
+points: [{ label: "8/16", value: null, tip: "no nights logged" }]`}
+  >
+    <OmTimeSeriesChart title="Sleep" unit="hours" format="fixed1" kind="area" series={[{ key: "sleep", label: "Sleep", points: sleep }]} />
+  </Demo>
+
+  <Demo
+    title="Bar — measured from zero"
+    note="Bars encode magnitude by length, so the axis always includes zero. Grouped bars get a 2px surface gap so adjacent fills never touch."
+    code={`<OmTimeSeriesChart kind="bar" title="Weekly volume" unit="km" format="fixed1" series={[…]} />`}
+  >
+    <OmTimeSeriesChart kind="bar" title="Weekly rowing volume" unit="km" format="fixed1" series={[{ key: "vol", label: "Volume", points: weeklyVolume }]} />
+  </Demo>
+
+  <Demo
+    title="Multi-series — legend plus direct labels"
+    note="Two or more series always get a legend; four or fewer are also direct-labelled, so identity is never carried by colour alone. Slots are assigned in fixed order and never cycled — a seventh series throws rather than reusing a hue."
+    code={`<OmTimeSeriesChart
+  title="Allocation drift"
+  unit="%"
+  series={allocation}   // 4 series → legend + direct labels
+/>`}
+  >
+    <OmTimeSeriesChart title="Allocation drift" unit="%" series={allocation} />
+  </Demo>
+
+  <Demo
+    title="Grouped bars"
+    note="The same four series as bars. Colour follows the entity, never its rank — filtering one out does not repaint the survivors."
+    code={`<OmTimeSeriesChart kind="bar" series={allocation.slice(0, 3)} />`}
+  >
+    <OmTimeSeriesChart kind="bar" title="Allocation by week" unit="%" series={allocation.slice(0, 3)} />
+  </Demo>
+
+  <Demo
+    title="Reversed axis for lower-is-better"
+    note="<code>reverseY</code> flips the scale so an improving resting HR trends upward, which is how the reader expects progress to look."
+    code={`<OmTimeSeriesChart title="Resting HR" unit="bpm" reverseY series={[…]} />`}
+  >
+    <OmTimeSeriesChart title="Resting heart rate" unit="bpm" reverseY series={[{ key: "rhr", label: "Resting HR", points: restingHr }]} />
+  </Demo>
+
+  <Demo
+    title="Sparkline"
+    note="The same engine with axes and padding off. Inherits <code>currentColor</code>, so it takes the colour of whatever row or tile it sits in."
+    code={`<OmSparkline values={account.history} label="Balance trend" />`}
+  >
+    <div style="display:flex;flex-wrap:wrap;gap:2rem;align-items:center">
+      {accounts.slice(0, 5).map((a) => (
+        <div style="display:flex;flex-direction:column;gap:.35rem">
+          <span style="font-size:.7rem;color:var(--om-fg-muted)">{a.name}</span>
+          <OmSparkline values={a.history} label={`${a.name} trend`} />
+        </div>
+      ))}
+    </div>
+  </Demo>
+
+  <Demo
+    title="Empty and flat data"
+    note="An all-null series renders a message rather than an axis of NaN. A flat series still gets a readable axis instead of dividing by a zero range."
+    code={`<OmTimeSeriesChart series={[{ key: "x", label: "X", points: [{ label: "1", value: null }] }]} />`}
+  >
+    <div class="sb-grid-2">
+      <OmTimeSeriesChart title="No data yet" series={[{ key: "empty", label: "Empty", points: [{ label: "1", value: null }, { label: "2", value: null }] }]} />
+      <OmTimeSeriesChart
+        title="Perfectly flat"
+        series={[{ key: "flat", label: "Flat", points: Array.from({ length: 8 }, (_, i) => ({ label: String(i + 1), value: 5 })) }]}
+      />
+    </div>
+  </Demo>
+</Story>

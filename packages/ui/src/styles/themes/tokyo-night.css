@@ -1,0 +1,61 @@
+/* ---------------------------------------------------------------------------
+ * Theme: tokyo-night
+ * Tokyo Night palette, square corners, green accent. Used by bigal.
+ *
+ * DARK ONLY by design — bigal has never had a light mode, so this theme sets
+ * --om-toggle-display: none and OmThemeToggle removes itself. Give the theme a
+ * light block and the toggle comes back with no component change.
+ *
+ * Chart palettes validated with the data-viz six checks on surface #1a1b26:
+ *   categorical  worst adjacent CVD ΔE 14.8 · normal-vision ΔE 22.9 · all ≥ 3:1
+ *   ramp         monotone L, ΔL ≥ 0.06, dark end 2.79:1 on surface
+ * The series steps are Tokyo Night's hues stepped down into the dark lightness
+ * band (L 0.48–0.67); the source pastels sit at L 0.72–0.82 and blow the band.
+ * Same hues, darker steps — it still reads as Tokyo Night.
+ * ------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: dark;
+
+  --om-bg: #1a1b26;
+  --om-bg-deep: #16161e;
+  --om-surface: #24283b;
+  --om-surface-2: #2f354c;
+
+  --om-fg: #c0caf5;
+  --om-fg-muted: #a9b1d6;
+  --om-fg-subtle: #565f89;
+
+  --om-line: #3b4261;
+  --om-line-strong: #565f89;
+
+  --om-accent: #9ece6a;
+  --om-accent-ink: #16161e;
+  --om-accent-soft: color-mix(in oklab, #9ece6a 14%, transparent);
+
+  --om-pos: #9ece6a;
+  --om-neg: #f7768e;
+  --om-warn: #e0af68;
+  --om-focus: #9ece6a;
+  --om-dot: color-mix(in oklab, #9ece6a 18%, transparent);
+
+  --om-series-1: #74a044;
+  --om-series-2: #9a78d6;
+  --om-series-3: #d2743a;
+  --om-series-4: #4396c8;
+  --om-series-5: #d5536b;
+  --om-series-6: #5b83d8;
+
+  --om-ramp-0: #24283b;
+  --om-ramp-1: #4a6b2c;
+  --om-ramp-2: #668f3e;
+  --om-ramp-3: #82b054;
+  --om-ramp-4: #9ece6a;
+
+  /* Single-mode theme: hide the toggle rather than ship a dead control. */
+  --om-toggle-display: none;
+
+  /* bigal's own type scale — sans headings, mono body. */
+  --om-font-display: "Geist", "IBM Plex Sans", "Segoe UI", sans-serif;
+  --om-page: 69rem;
+}

@@ -1,0 +1,56 @@
+/* ---------------------------------------------------------------------------
+ * Migration shim. Import AFTER tokens + theme and an app's existing stylesheets
+ * keep working while being driven by --om-* underneath. Delete the block for an
+ * app once its own CSS has been ported to --om-* names.
+ *
+ * Nothing in @omarchy/ui reads these aliases.
+ * ------------------------------------------------------------------------- */
+
+:root {
+  /* health-board */
+  --bg: var(--om-bg);
+  --card: var(--om-surface);
+  --ink: var(--om-fg);
+  --muted: var(--om-fg-muted);
+  --line: var(--om-line);
+  --accent: var(--om-accent);
+  --accent-ink: var(--om-accent-ink);
+  --warn: var(--om-warn);
+  --pixel: var(--om-dot);
+  --dot-0: var(--om-ramp-0);
+  --dot-1: var(--om-ramp-1);
+  --dot-2: var(--om-ramp-3);
+  --dot-3: var(--om-ramp-4);
+  --kind: var(--om-accent-soft);
+
+  /* household-money */
+  --paper: var(--om-bg);
+  --paper-2: var(--om-surface-2);
+  --rule: var(--om-line);
+  --brass: var(--om-accent);
+  --gain: var(--om-pos);
+  --loss: var(--om-neg);
+  --focus: var(--om-focus);
+  --font-ui: var(--om-font-ui);
+  --font-figure: var(--om-font-display);
+  --measure: var(--om-measure);
+  --gutter: var(--om-gutter);
+
+  /* bigal */
+  --t-bg: var(--om-bg);
+  --t-bg-deep: var(--om-bg-deep);
+  --t-surface: var(--om-surface);
+  --t-surface-2: var(--om-surface-2);
+  --t-text: var(--om-fg);
+  --t-text-secondary: var(--om-fg-muted);
+  --t-text-muted: var(--om-fg-subtle);
+  --t-brand: var(--om-accent);
+  --t-brand-ink: var(--om-accent-ink);
+  --t-brand-soft: var(--om-accent-soft);
+  --t-border-subtle: var(--om-line);
+  --t-border-strong: var(--om-line-strong);
+  --font-sans: var(--om-font-display);
+  --font-mono: var(--om-font-mono);
+  --page: var(--om-page);
+  --nav-h: var(--om-nav-h);
+}

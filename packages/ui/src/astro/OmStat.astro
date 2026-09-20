@@ -1,0 +1,59 @@
+---
+import type { NumberFormat } from "../core/format.ts";
+import { formatNumber } from "../core/format.ts";
+
+export interface Props {
+  label: string;
+  value: string | number | null;
+  unit?: string;
+  format?: NumberFormat;
+  /** Renders a "?" affordance carrying this text. */
+  hint?: string;
+  /** Signed change. Direction is derived unless `goodDirection` says otherwise. */
+  delta?: number | null;
+  deltaFormat?: NumberFormat;
+  /** "up" (default) means a rise is good; "down" suits resting HR or spend. */
+  goodDirection?: "up" | "down";
+  class?: string;
+}
+
+const {
+  label,
+  value,
+  unit,
+  format = "int",
+  hint,
+  delta = null,
+  deltaFormat = "fixed1",
+  goodDirection = "up",
+  class: className,
+} = Astro.props;
+
+const display = value == null ? "–" : typeof value === "number" ? formatNumber(value, format) : value;
+
+const direction = delta == null || delta === 0 ? "flat" : delta > 0 ? "up" : "down";
+// "Good" is the app's call, not the arrow's: a falling resting HR is green.
+const tone =
+  direction === "flat" ? "flat" : (direction === "up") === (goodDirection === "up") ? "up" : "down";
+const arrow = direction === "up" ? "▲" : direction === "down" ? "▼" : "–";
+---
+
+<div class:list={["om-stat", className]}>
+  <div class="om-stat__label">
+    <span>{label}</span>
+    {hint && (
+      <button class="om-stat__hint" type="button" data-om-tip={hint} aria-label={`${label} explained`}>?</button>
+    )}
+  </div>
+  <div class="om-stat__value">
+    {display}
+    {unit && <span class="om-stat__unit">{unit}</span>}
+    {delta != null && (
+      <span class:list={["om-stat__delta", `om-stat__delta--${tone}`]}>
+        <span aria-hidden="true">{arrow}</span>
+        <span>{formatNumber(Math.abs(delta), deltaFormat)}</span>
+      </span>
+    )}
+  </div>
+  <slot />
+</div>

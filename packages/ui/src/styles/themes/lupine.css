@@ -1,0 +1,126 @@
+/* ---------------------------------------------------------------------------
+ * Theme: lupine
+ * Omarchy lupine — sharp corners, mono type, periwinkle accent, pixel field.
+ * Light + dark. Used by split-log, health-board, household-money.
+ *
+ * Chart palettes validated with the data-viz six checks:
+ *   categorical light  worst adjacent CVD ΔE 9.1 · normal-vision ΔE 19.6
+ *   categorical dark   worst adjacent CVD ΔE 8.4 · normal-vision ΔE 19.3
+ *   ramp light/dark    monotone L, ΔL ≥ 0.06, light end ≥ 2:1 on surface
+ * Three light slots sit below 3:1 on #fafafa, so every multi-series chart in
+ * this library ships a legend plus direct labels — that is the relief channel,
+ * not a nicety. Do not re-order the slots: the order is the CVD mechanism.
+ * ------------------------------------------------------------------------- */
+
+:root {
+  --om-bg: #fafafa;
+  --om-bg-deep: #f0f0f0;
+  --om-surface: #ffffff;
+  --om-surface-2: #f0f0f0;
+
+  --om-fg: #000000;
+  --om-fg-muted: #555555;
+  --om-fg-subtle: #888888;
+
+  --om-line: #d4d4d4;
+  --om-line-strong: #000000;
+
+  --om-accent: #4f6ef7;
+  --om-accent-ink: #ffffff;
+  --om-accent-soft: color-mix(in oklab, #4f6ef7 12%, transparent);
+
+  --om-pos: #215c45;
+  --om-neg: #c23b2e;
+  --om-warn: #8a5a00;
+  --om-focus: #4f6ef7;
+  --om-dot: #c5cffc;
+
+  --om-series-1: #4f6ef7;
+  --om-series-2: #eb6834;
+  --om-series-3: #1baf7a;
+  --om-series-4: #eda100;
+  --om-series-5: #e87ba4;
+  --om-series-6: #4a3aa7;
+
+  --om-ramp-0: #ececec;
+  --om-ramp-1: #89b2ff;
+  --om-ramp-2: #6b90ff;
+  --om-ramp-3: #4f6ef7;
+  --om-ramp-4: #364cd3;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --om-bg: #121212;
+    --om-bg-deep: #0a0a0a;
+    --om-surface: #1a1a1a;
+    --om-surface-2: #242424;
+
+    --om-fg: #f5f5f5;
+    --om-fg-muted: #a3a3a3;
+    --om-fg-subtle: #737373;
+
+    --om-line: #2e2e2e;
+    --om-line-strong: #f5f5f5;
+
+    --om-accent: #7b8cff;
+    --om-accent-ink: #0a0a0a;
+    --om-accent-soft: color-mix(in oklab, #7b8cff 16%, transparent);
+
+    --om-pos: #6fbf9a;
+    --om-neg: #f07167;
+    --om-warn: #e0b07a;
+    --om-focus: #7b8cff;
+    --om-dot: #2a3358;
+
+    --om-series-1: #7080f5;
+    --om-series-2: #d95926;
+    --om-series-3: #199e70;
+    --om-series-4: #c98500;
+    --om-series-5: #d55181;
+    --om-series-6: #9085e9;
+
+    --om-ramp-0: #242424;
+    --om-ramp-1: #3b46a0;
+    --om-ramp-2: #4f5cc4;
+    --om-ramp-3: #6574e4;
+    --om-ramp-4: #7b8cff;
+  }
+}
+
+:root.dark {
+  --om-bg: #121212;
+  --om-bg-deep: #0a0a0a;
+  --om-surface: #1a1a1a;
+  --om-surface-2: #242424;
+
+  --om-fg: #f5f5f5;
+  --om-fg-muted: #a3a3a3;
+  --om-fg-subtle: #737373;
+
+  --om-line: #2e2e2e;
+  --om-line-strong: #f5f5f5;
+
+  --om-accent: #7b8cff;
+  --om-accent-ink: #0a0a0a;
+  --om-accent-soft: color-mix(in oklab, #7b8cff 16%, transparent);
+
+  --om-pos: #6fbf9a;
+  --om-neg: #f07167;
+  --om-warn: #e0b07a;
+  --om-focus: #7b8cff;
+  --om-dot: #2a3358;
+
+  --om-series-1: #7080f5;
+  --om-series-2: #d95926;
+  --om-series-3: #199e70;
+  --om-series-4: #c98500;
+  --om-series-5: #d55181;
+  --om-series-6: #9085e9;
+
+  --om-ramp-0: #242424;
+  --om-ramp-1: #3b46a0;
+  --om-ramp-2: #4f5cc4;
+  --om-ramp-3: #6574e4;
+  --om-ramp-4: #7b8cff;
+}

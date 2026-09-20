@@ -1,0 +1,100 @@
+---
+import "@omarchy/ui/styles.css";
+import "@omarchy/ui/fonts.css";
+import "../styles/storyboard.css";
+import lupineUrl from "@omarchy/ui/themes/lupine.css?url";
+import tokyoUrl from "@omarchy/ui/themes/tokyo-night.css?url";
+import OmThemeScript from "@omarchy/ui/astro/OmThemeScript.astro";
+import OmPageHeader from "@omarchy/ui/astro/OmPageHeader.astro";
+
+export interface Props {
+  title: string;
+  kicker?: string;
+  intro?: string;
+}
+
+const { title, kicker, intro } = Astro.props;
+
+const nav = [
+  { href: "/", label: "Overview" },
+  { href: "/tokens", label: "Tokens" },
+  { href: "/stat", label: "Stat" },
+  { href: "/chart", label: "Chart" },
+  { href: "/heatmap", label: "Heatmap" },
+  { href: "/list", label: "List" },
+  { href: "/shell", label: "Shell" },
+];
+
+const FAMILY_KEY = "om-storyboard-family";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title} · omarchy-ui</title>
+    <meta name="description" content="Live specimens for every @omarchy/ui component, in both themes and both modes." />
+    <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)" />
+
+    <OmThemeScript />
+
+    <link rel="stylesheet" href={lupineUrl} data-om-family="lupine" />
+    <link rel="stylesheet" href={tokyoUrl} data-om-family="tokyo-night" />
+
+    <script is:inline define:vars={{ FAMILY_KEY }}>
+      // Runs before paint so the wrong theme never flashes. Both stylesheets
+      // are linked; exactly one is enabled.
+      (function () {
+        try {
+          var family = localStorage.getItem(FAMILY_KEY) || "lupine";
+          document.querySelectorAll("link[data-om-family]").forEach(function (link) {
+            link.disabled = link.dataset.omFamily !== family;
+          });
+          document.documentElement.dataset.omFamily = family;
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <OmPageHeader title="omarchy-ui" nav={nav}>
+      <div slot="actions" class="sb-seg" role="group" aria-label="Theme family">
+        <button type="button" data-family="lupine" aria-pressed="true">lupine</button>
+        <button type="button" data-family="tokyo-night" aria-pressed="false">tokyo</button>
+      </div>
+    </OmPageHeader>
+
+    <main class="sb-shell">
+      <div class="sb-hero">
+        {kicker && <p class="sb-kicker">{kicker}</p>}
+        <h1>{title}</h1>
+        {intro && <p>{intro}</p>}
+      </div>
+      <slot />
+      <footer class="sb-foot">
+        @omarchy/ui storyboard · every specimen on this page is the same component the apps import.
+      </footer>
+    </main>
+
+    <script is:inline define:vars={{ FAMILY_KEY }}>
+      (function () {
+        var buttons = document.querySelectorAll("[data-family]");
+        function apply(family) {
+          document.querySelectorAll("link[data-om-family]").forEach(function (link) {
+            link.disabled = link.dataset.omFamily !== family;
+          });
+          document.documentElement.dataset.omFamily = family;
+          buttons.forEach(function (b) {
+            b.setAttribute("aria-pressed", String(b.dataset.family === family));
+          });
+          try { localStorage.setItem(FAMILY_KEY, family); } catch (e) {}
+        }
+        buttons.forEach(function (b) {
+          b.addEventListener("click", function () { apply(b.dataset.family); });
+        });
+        try { apply(localStorage.getItem(FAMILY_KEY) || "lupine"); } catch (e) { apply("lupine"); }
+      })();
+    </script>
+  </body>
+</html>

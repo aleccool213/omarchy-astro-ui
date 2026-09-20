@@ -1,0 +1,86 @@
+---
+import Story from "../layouts/Story.astro";
+import Demo from "../components/Demo.astro";
+import OmThemeToggle from "@omarchy/ui/astro/OmThemeToggle.astro";
+---
+
+<Story
+  title="OmPageHeader + OmThemeToggle"
+  kicker="component 5 of 5"
+  intro="The header at the top of this page is the component. One sticky header, one optional mobile dock, one theme toggle — replacing three copied no-flash scripts that used three different localStorage keys."
+>
+  <div class="sb-note" style="margin-bottom:2rem">
+    <p style="margin-top:0"><strong>The no-flash script is the whole point.</strong> It has to run synchronously
+    in <code>&lt;head&gt;</code>, before any stylesheet, or the wrong theme paints first. <code>OmThemeScript</code>
+    ships that snippet from one place, keyed on <code>om-theme</code>, so the three apps stop drifting.</p>
+    <p style="margin-bottom:0">The toggle renders its label empty on the server and stamps ☾/☀ on mount — SSR
+    cannot know the stored choice, and shipping a guess means shipping a label that contradicts it.</p>
+  </div>
+
+  <Demo
+    title="The toggle on its own"
+    note="Hidden automatically under a single-mode theme: <code>tokyo-night</code> sets <code>--om-toggle-display: none</code>, so switching the theme family in the header makes this specimen disappear rather than offer a dead control."
+    code={`<OmThemeToggle />`}
+    plain
+  >
+    <div style="display:flex;align-items:center;gap:1rem">
+      <OmThemeToggle />
+      <span style="color:var(--om-fg-muted);font-size:var(--om-text-sm)">
+        Switch to the tokyo theme in the header — this control removes itself.
+      </span>
+    </div>
+  </Demo>
+
+  <Demo
+    title="Layout recipe"
+    note="What a consuming app's <code>Base.astro</code> becomes. <code>dock</code> adds the bottom bar on small screens for app-shaped sites; a blog leaves it off."
+    code={`---
+import "@omarchy/ui/styles.css";
+import "@omarchy/ui/themes/lupine.css";
+import OmThemeScript from "@omarchy/ui/astro/OmThemeScript.astro";
+import OmPageHeader from "@omarchy/ui/astro/OmPageHeader.astro";
+
+const nav = [
+  { href: "/", label: "Board" },
+  { href: "/history", label: "Logbook" },
+  { href: "/settings", label: "Settings" },
+];
+---
+<html lang="en">
+  <head>
+    <OmThemeScript />
+  </head>
+  <body>
+    <OmPageHeader title="Health board" nav={nav} dock>
+      <svg slot="logo" class="om-header__logo">…</svg>
+    </OmPageHeader>
+    <main class="om-shell"><slot /></main>
+  </body>
+</html>`}
+  >
+    <p style="margin:0;color:var(--om-fg-muted);font-size:var(--om-text-sm)">
+      The live specimen is the header at the top of this page — sticky, backdrop-blurred, with the nav marked
+      by current path and the theme family control passed through the <code>actions</code> slot.
+    </p>
+  </Demo>
+
+  <Demo
+    title="React parity"
+    note="split-log gets the same header from <code>@omarchy/ui/react</code>, with <code>renderLink</code> so TanStack Router's <code>&lt;Link&gt;</code> slots in without the library depending on a router."
+    code={`import { OmPageHeader } from "@omarchy/ui/react";
+import { Link } from "@tanstack/react-router";
+
+<OmPageHeader
+  title="Split Log"
+  nav={[{ href: "/", label: "Board", active: pathname === "/" }]}
+  dock
+  renderLink={(item, children, props) => (
+    <Link to={item.href} {...props}>{children}</Link>
+  )}
+/>`}
+  >
+    <p style="margin:0;color:var(--om-fg-muted);font-size:var(--om-text-sm)">
+      Same classes, same CSS file, same theme tokens — only the markup layer differs.
+    </p>
+  </Demo>
+</Story>

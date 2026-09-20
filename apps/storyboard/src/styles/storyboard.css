@@ -1,0 +1,195 @@
+/* Chrome for the storyboard itself. Nothing here belongs in @omarchy/ui —
+ * it is the frame around the specimens, not a specimen. */
+
+.sb-shell {
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: var(--om-space-6) var(--om-gutter) 5rem;
+}
+
+.sb-hero { margin-bottom: var(--om-space-6); }
+
+.sb-hero h1 {
+  margin: 0 0 var(--om-space-2);
+  font-size: var(--om-text-2xl);
+}
+
+.sb-hero p {
+  margin: 0;
+  max-width: 44rem;
+  color: var(--om-fg-muted);
+  line-height: 1.6;
+}
+
+.sb-kicker {
+  margin: 0 0 var(--om-space-2);
+  color: var(--om-accent);
+  font-size: var(--om-text-xs);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.sb-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--om-space-2);
+}
+
+.sb-seg {
+  display: inline-flex;
+  border: 1px solid var(--om-line);
+  border-radius: var(--om-radius);
+  overflow: hidden;
+}
+
+.sb-seg button {
+  padding: 0 var(--om-space-3);
+  height: 2.25rem;
+  border: 0;
+  background: var(--om-surface);
+  color: var(--om-fg);
+  font: 500 var(--om-text-xs) / 1 var(--om-font-ui);
+  cursor: pointer;
+}
+
+.sb-seg button + button { border-left: 1px solid var(--om-line); }
+.sb-seg button[aria-pressed="true"] { background: var(--om-accent); color: var(--om-accent-ink); }
+
+.sb-demo { margin: 0 0 var(--om-space-6); }
+
+.sb-demo__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--om-space-2);
+  margin-bottom: var(--om-space-2);
+}
+
+.sb-demo__title {
+  margin: 0;
+  font-size: var(--om-text-lg);
+  font-weight: 600;
+}
+
+.sb-demo__note {
+  margin: 0 0 var(--om-space-3);
+  max-width: 48rem;
+  color: var(--om-fg-muted);
+  font-size: var(--om-text-sm);
+  line-height: 1.55;
+}
+
+.sb-stage {
+  padding: var(--om-space-5);
+  border: 1px solid var(--om-line);
+  border-radius: var(--om-radius);
+  background-color: var(--om-bg);
+  background-image: radial-gradient(var(--om-dot) var(--om-dot-radius), transparent var(--om-dot-radius));
+  background-size: var(--om-dot-size) var(--om-dot-size);
+}
+
+.sb-stage--plain { background-image: none; background: var(--om-bg); }
+
+.sb-code {
+  margin: 0;
+  border: 1px solid var(--om-line);
+  border-top: 0;
+}
+
+.sb-code summary {
+  padding: var(--om-space-2) var(--om-space-4);
+  color: var(--om-fg-muted);
+  font-size: var(--om-text-xs);
+  cursor: pointer;
+  user-select: none;
+}
+
+.sb-code pre {
+  margin: 0;
+  padding: var(--om-space-4);
+  border-top: 1px solid var(--om-line);
+  background: var(--om-bg-deep);
+  overflow-x: auto;
+  font-family: var(--om-font-mono);
+  font-size: var(--om-text-xs);
+  line-height: 1.6;
+}
+
+.sb-index {
+  display: grid;
+  gap: var(--om-space-3);
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  margin: var(--om-space-6) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sb-index a {
+  display: block;
+  height: 100%;
+  padding: var(--om-space-4);
+  border: 1px solid var(--om-line);
+  background: var(--om-surface);
+  color: inherit;
+  text-decoration: none;
+}
+
+.sb-index a:hover { border-color: var(--om-accent); }
+.sb-index strong { display: block; margin-bottom: var(--om-space-1); }
+.sb-index span { color: var(--om-fg-muted); font-size: var(--om-text-sm); }
+
+.sb-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: var(--om-space-2);
+  padding: 0;
+  margin: 0 0 var(--om-space-5);
+  list-style: none;
+}
+
+.sb-swatch {
+  border: 1px solid var(--om-line);
+  font-size: var(--om-text-xs);
+}
+
+.sb-swatch__chip { height: 3rem; }
+
+.sb-swatch__meta {
+  padding: var(--om-space-2);
+  background: var(--om-surface);
+}
+
+.sb-swatch__meta code { color: var(--om-fg-muted); font-size: 0.68rem; }
+
+.sb-grid-2 {
+  display: grid;
+  gap: var(--om-space-4);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 900px) {
+  .sb-grid-2 { grid-template-columns: 1fr 1fr; }
+}
+
+.sb-note {
+  padding: var(--om-space-4);
+  border-left: 2px solid var(--om-accent);
+  background: var(--om-accent-soft);
+  color: var(--om-fg-muted);
+  font-size: var(--om-text-sm);
+  line-height: 1.6;
+}
+
+.sb-note strong { color: var(--om-fg); }
+.sb-note code { font-size: 0.85em; }
+
+footer.sb-foot {
+  margin-top: var(--om-space-6);
+  padding-top: var(--om-space-4);
+  border-top: 1px solid var(--om-line);
+  color: var(--om-fg-subtle);
+  font-size: var(--om-text-xs);
+}

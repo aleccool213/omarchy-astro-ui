@@ -1,0 +1,177 @@
+---
+import { buildChart, type ChartKind, type ChartSeries } from "../core/series.ts";
+import { formatNumber, type NumberFormat } from "../core/format.ts";
+
+export interface Props {
+  title?: string;
+  series: ChartSeries[];
+  kind?: ChartKind;
+  unit?: string;
+  format?: NumberFormat;
+  height?: number;
+  width?: number;
+  note?: string;
+  /** Lower is better (pace, resting HR). */
+  reverseY?: boolean;
+  /** Drop the card chrome and render the plot alone. */
+  bare?: boolean;
+  /** The table view is the accessibility fallback and the contrast relief the
+   *  light palette requires. Only turn it off if the values are visible some
+   *  other way on the page. */
+  table?: boolean;
+  class?: string;
+}
+
+const {
+  title,
+  series,
+  kind = "line",
+  unit,
+  format = "int",
+  height = 220,
+  width = 640,
+  note,
+  reverseY = false,
+  bare = false,
+  table = true,
+  class: className,
+} = Astro.props;
+
+const geo = buildChart(series, { kind, unit, format, height, width, reverseY });
+const { pad, innerW, innerH } = geo;
+const plotBottom = pad.top + innerH;
+
+// One focus dot per series; the client moves it to the hovered column. The
+// per-column coordinates ride along as attributes so no geometry is redone.
+const focus = geo.series.map((s) => {
+  const xs: string[] = new Array(geo.columns.length).fill("");
+  const ys: string[] = new Array(geo.columns.length).fill("");
+  for (const m of s.markers) {
+    xs[m.index] = m.x.toFixed(1);
+    ys[m.index] = m.y.toFixed(1);
+  }
+  return { slot: s.slot, xs: xs.join(","), ys: ys.join(",") };
+});
+
+// `</script>` inside a label would close the JSON block early.
+const columnsJson = JSON.stringify(geo.columns).replace(/</g, "\\u003c");
+const titleId = title ? `om-chart-${Math.random().toString(36).slice(2, 8)}` : undefined;
+---
+
+<figure class:list={["om-chart", bare && "om-chart--bare", className]} data-om-chart>
+  {(title || unit) && (
+    <figcaption class="om-chart__head">
+      {title && <h3 class="om-chart__title" id={titleId}>{title}</h3>}
+      {unit && <span class="om-chart__unit">{unit}</span>}
+    </figcaption>
+  )}
+
+  {geo.empty ? (
+    <p class="om-chart__empty">No data yet.</p>
+  ) : (
+    <svg
+      class="om-chart__svg"
+      viewBox={`0 0 ${geo.width} ${geo.height}`}
+      role="img"
+      tabindex="0"
+      aria-labelledby={titleId}
+      aria-label={titleId ? undefined : "Chart"}
+    >
+      <g aria-hidden="true">
+        {geo.yTicks.map((t) => (
+          <line class="om-chart__grid" x1={pad.left} x2={pad.left + innerW} y1={t.y} y2={t.y} />
+        ))}
+        {geo.zeroY != null && (
+          <line class="om-chart__zero" x1={pad.left} x2={pad.left + innerW} y1={geo.zeroY} y2={geo.zeroY} />
+        )}
+        {geo.yTicks.map((t) => (
+          <text class="om-chart__tick om-chart__tick--y" x={pad.left - 8} y={t.y + 4}>{t.label}</text>
+        ))}
+        {geo.xTicks.map((t) => (
+          <text class="om-chart__tick om-chart__tick--x" x={t.x} y={geo.height - 8}>{t.label}</text>
+        ))}
+      </g>
+
+      {geo.series.map((s) => (
+        <g aria-hidden="true">
+          {s.areaPaths.map((d) => <path class="om-chart__area" d={d} fill={s.colorVar} />)}
+          {s.segments.map((d) => <path class="om-chart__line" d={d} stroke={s.colorVar} />)}
+          {s.bars.map((b) => (
+            <rect class="om-chart__bar" x={b.x} y={b.y} width={b.width} height={b.height} fill={s.colorVar} />
+          ))}
+          {/* A single point has no line to draw, so give it a mark of its own. */}
+          {s.segments.length === 0 && s.bars.length === 0 && s.markers.map((m) => (
+            <circle cx={m.x} cy={m.y} r="3" fill={s.colorVar} />
+          ))}
+        </g>
+      ))}
+
+      {geo.showDirectLabels && geo.series.map((s) =>
+        s.last ? (
+          <text
+            class="om-chart__direct"
+            x={Math.min(s.last.x + 6, geo.width - 2)}
+            y={Math.max(10, s.last.y - 6)}
+            aria-hidden="true"
+          >{s.label}</text>
+        ) : null,
+      )}
+
+      <line class="om-chart__crosshair om-hidden" data-om-crosshair y1={pad.top} y2={plotBottom} x1="0" x2="0" />
+      <g class="om-chart__focus" data-om-focus>
+        {focus.map((f) => (
+          <circle class="om-hidden" r="4" fill={`var(--om-series-${f.slot})`} data-om-x={f.xs} data-om-y={f.ys} />
+        ))}
+      </g>
+      <rect class="om-chart__hit" x={pad.left} y={pad.top} width={innerW} height={innerH} />
+    </svg>
+  )}
+
+  {note && <p class="om-chart__note">{note}</p>}
+
+  {geo.showLegend && (
+    <ul class="om-chart__legend">
+      {geo.series.map((s) => (
+        <li>
+          <span class="om-chart__swatch" style={`background:${s.colorVar}`} aria-hidden="true"></span>
+          <span>{s.label}</span>
+        </li>
+      ))}
+    </ul>
+  )}
+
+  {!geo.empty && table && (
+    <details class="om-chart__table">
+      <summary>Table view</summary>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">{"Point"}</th>
+            {geo.series.map((s) => <th scope="col">{s.label}{unit ? ` (${unit})` : ""}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {geo.columns.map((c) => (
+            <tr>
+              <th scope="row">{c.label}</th>
+              {c.values.map((v) => <td>{v.value == null ? "–" : formatNumber(v.value, format)}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </details>
+  )}
+
+  <script type="application/json" data-om-columns set:html={columnsJson}></script>
+</figure>
+
+<script>
+  import { mountCharts } from "../client/chart.ts";
+  import { mountTips } from "../client/hover.ts";
+  mountCharts();
+  mountTips();
+  document.addEventListener("astro:page-load", () => {
+    mountCharts();
+    mountTips();
+  });
+</script>

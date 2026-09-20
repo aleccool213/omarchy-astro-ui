@@ -1,0 +1,13 @@
+---
+import { noFlashScript, THEME_KEY } from "../core/theme.ts";
+
+export interface Props {
+  storageKey?: string;
+}
+const { storageKey = THEME_KEY } = Astro.props;
+---
+
+{/* Must sit in <head> before any stylesheet. `is:inline` keeps Astro from
+    bundling it into a deferred module, which would run after first paint —
+    the flash this exists to prevent. */}
+<script is:inline set:html={noFlashScript(storageKey)}></script>

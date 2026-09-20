@@ -1,0 +1,42 @@
+---
+import Story from "../layouts/Story.astro";
+
+const components = [
+  ["/stat", "OmStat", "Label, value, unit, hint, delta. The tile health-board, split-log and household-money each built separately."],
+  ["/chart", "OmTimeSeriesChart", "Line, area, bar and sparkline over one geometry engine. Replaces recharts in split-log."],
+  ["/heatmap", "OmActivityHeatmap", "Calendar grid with level ramp. One implementation instead of two."],
+  ["/list", "OmDataList", "Slot-driven rows in three densities, with pagination that degrades without JS."],
+  ["/shell", "OmPageHeader + OmThemeToggle", "One header, one dock, one theme key — replacing three copied no-flash scripts."],
+  ["/tokens", "Tokens & palettes", "The full contract, both themes, and the validated chart colours."],
+];
+---
+
+<Story
+  title="omarchy-ui"
+  kicker="component library"
+  intro="Five components, two themes, one token contract. Everything here is the same code the apps import — the CSS is written once and the Astro and React renderers are thin markup over shared geometry."
+>
+  <ul class="sb-index">
+    {components.map(([href, name, note]) => (
+      <li>
+        <a href={href}>
+          <strong>{name}</strong>
+          <span>{note}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <div class="sb-note">
+    <p style="margin-top:0">
+      <strong>Switch themes with the control in the header</strong>, and light/dark with the ☾ button beside it.
+      Every specimen below re-renders in all four combinations — that is the point of the storyboard: a component
+      is not done until it survives lupine light, lupine dark and tokyo-night.
+    </p>
+    <p style="margin-bottom:0">
+      The library ships source (<code>.astro</code>, <code>.ts</code>, <code>.tsx</code>, <code>.css</code>) rather
+      than a build output, so consumers compile it with their own Vite. That is what lets one package serve
+      Astro 5, Astro 7 and a React app at the same time.
+    </p>
+  </div>
+</Story>

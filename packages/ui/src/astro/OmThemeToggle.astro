@@ -1,0 +1,22 @@
+---
+export interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+{/* Label starts empty; the client stamps ☾/☀ once it knows the resolved theme,
+    so SSR never ships a label that contradicts the user's stored choice. */}
+<button
+  type="button"
+  class:list={["om-theme-toggle", className]}
+  data-om-theme-toggle
+  aria-label="Toggle theme"
+  aria-pressed="false"
+><span data-om-theme-label aria-hidden="true"></span></button>
+
+<script>
+  import { mountThemeToggles } from "../client/theme.ts";
+  mountThemeToggles();
+  document.addEventListener("astro:page-load", () => mountThemeToggles());
+</script>

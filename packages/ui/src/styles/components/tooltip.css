@@ -1,0 +1,45 @@
+.om-tip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  max-width: min(280px, calc(100vw - 20px));
+  padding: 0.45rem 0.6rem;
+  background: var(--om-fg);
+  color: var(--om-bg);
+  border: 1px solid var(--om-fg);
+  border-radius: var(--om-radius);
+  font-family: var(--om-font-ui);
+  font-size: var(--om-text-sm);
+  line-height: 1.4;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.om-tip[hidden] { display: none; }
+
+.om-tip__title {
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  opacity: 0.75;
+  font-size: var(--om-text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.om-tip__row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.om-tip__swatch {
+  width: 0.55rem;
+  height: 0.55rem;
+  flex: 0 0 auto;
+  border-radius: var(--om-radius);
+}
+
+.om-tip__name { opacity: 0.8; }
+.om-tip__value { margin-left: auto; font-weight: 600; }

@@ -1,0 +1,26 @@
+---
+export interface Props {
+  title: string;
+  note?: string;
+  code?: string;
+  /** Turn off the pixel-field backdrop for specimens that carry their own. */
+  plain?: boolean;
+}
+const { title, note, code, plain = false } = Astro.props;
+---
+
+<section class="sb-demo">
+  <div class="sb-demo__head">
+    <h2 class="sb-demo__title">{title}</h2>
+  </div>
+  {note && <p class="sb-demo__note" set:html={note} />}
+  <div class:list={["sb-stage", plain && "sb-stage--plain"]}>
+    <slot />
+  </div>
+  {code && (
+    <details class="sb-code">
+      <summary>Usage</summary>
+      <pre><code>{code}</code></pre>
+    </details>
+  )}
+</section>

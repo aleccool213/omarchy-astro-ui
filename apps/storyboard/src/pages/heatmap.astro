@@ -1,0 +1,52 @@
+---
+import Story from "../layouts/Story.astro";
+import Demo from "../components/Demo.astro";
+import OmActivityHeatmap from "@omarchy/ui/astro/OmActivityHeatmap.astro";
+import { workoutDays } from "../data/samples";
+---
+
+<Story
+  title="OmActivityHeatmap"
+  kicker="component 3 of 5"
+  intro="The calendar grid health-board and split-log each built separately, with different week alignment and different level maths. One implementation now: Monday-first columns, UTC-anchored dates, and a four-step ramp scaled to the observed maximum."
+>
+  <Demo
+    title="26 weeks of workouts"
+    note="Tap or hover any cell. Every cell is a real button, so the grid is keyboard-navigable and each date is announced with its value."
+    code={`---
+import OmActivityHeatmap from "@omarchy/ui/astro/OmActivityHeatmap.astro";
+---
+<OmActivityHeatmap
+  values={workoutDays}          // { "2026-09-18": 2, … }
+  weeks={26}
+  end="2026-09-20"
+  noun={["workout", "workouts"]}
+/>`}
+  >
+    <OmActivityHeatmap values={workoutDays} weeks={26} end="2026-09-20" noun={["workout", "workouts"]} />
+  </Demo>
+
+  <Demo
+    title="Shorter window"
+    note="Columns are always whole Monday-start weeks and days after <code>end</code> render blank, so the grid ends on today rather than on a padded future week."
+    code={`<OmActivityHeatmap values={workoutDays} weeks={13} end="2026-09-20" />`}
+  >
+    <OmActivityHeatmap values={workoutDays} weeks={13} end="2026-09-20" noun={["workout", "workouts"]} caption="Last 13 weeks." />
+  </Demo>
+
+  <Demo
+    title="Explicit thresholds"
+    note="By default levels are quartiles of the observed maximum. Pass <code>thresholds</code> when the buckets mean something fixed — one workout is one workout regardless of the best week."
+    code={`<OmActivityHeatmap values={workoutDays} thresholds={[1, 2, 3]} />`}
+  >
+    <OmActivityHeatmap values={workoutDays} weeks={13} end="2026-09-20" thresholds={[1, 2, 3]} noun={["workout", "workouts"]} caption="Fixed buckets: 1, 2, 3+ workouts." />
+  </Demo>
+
+  <Demo
+    title="No data"
+    note="An empty dataset renders the grid at level 0 rather than collapsing or dividing by a zero maximum."
+    code={`<OmActivityHeatmap values={{}} weeks={13} />`}
+  >
+    <OmActivityHeatmap values={{}} weeks={13} end="2026-09-20" noun={["workout", "workouts"]} caption="Nothing logged yet." />
+  </Demo>
+</Story>

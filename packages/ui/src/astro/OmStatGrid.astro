@@ -1,0 +1,16 @@
+---
+export interface Props {
+  /** Columns on small screens / from 640px up. */
+  cols?: number;
+  colsSm?: number;
+  class?: string;
+}
+const { cols = 2, colsSm = 3, class: className } = Astro.props;
+---
+
+<div
+  class:list={["om-stat-grid", className]}
+  style={`--om-stat-cols:${cols};--om-stat-cols-sm:${colsSm}`}
+>
+  <slot />
+</div>
