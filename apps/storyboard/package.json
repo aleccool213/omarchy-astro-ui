@@ -10,7 +10,7 @@
     "check": "astro check"
   },
   "dependencies": {
-    "@omarchy/ui": "*",
+    "@omarchy/ui": "file:../..",
     "astro": "^5.13.5"
   },
   "devDependencies": {

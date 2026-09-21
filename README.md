@@ -8,9 +8,14 @@ The repo is `omarchy-astro-ui` (Astro is the main consumer); the package it
 publishes is `@omarchy/ui`, which also ships React renderers for `split-log`.
 
 ```
-packages/ui/          @omarchy/ui — the library
+src/                  @omarchy/ui — the library (the repo root IS the package)
 apps/storyboard/      live specimens, deployable to Vercel
 ```
+
+The library lives at the repo root on purpose: npm cannot install a package
+from a subdirectory of a git repository, so a nested `packages/ui` would have
+forced every consumer to wait on an npm publish. At the root, a plain `github:`
+dependency works with no registry, no token and no publish step.
 
 ## Why it is shaped this way
 
@@ -32,22 +37,18 @@ React runtime into three currently zero-JS sites, so instead:
 
 ## Install
 
-```sh
-npm install @omarchy/ui
+Not on npm yet, and it does not need to be — install it straight from GitHub:
+
+```jsonc
+// package.json
+"dependencies": {
+  "@omarchy/ui": "github:aleccool213/omarchy-astro-ui#main"
+}
 ```
 
-Not published yet. Until it is, link it from a local checkout — a `github:`
-dependency will not work, because npm installs a git dependency from the repo
-root and the package lives in `packages/ui`:
-
-```sh
-# in this repo
-npm link --workspace=@omarchy/ui
-# in the consuming app
-npm link @omarchy/ui
-```
-
-When you do publish: `npm publish --access public --workspace=@omarchy/ui`.
+Pin a tag (`#v0.1.0`) once the API stops moving, so an app does not pick up a
+breaking change on its next `npm install`. If you do publish later:
+`npm publish --access public`.
 
 Astro needs one line of config, because the package is source rather than a
 build output:
@@ -103,7 +104,7 @@ import { OmStat, OmTimeSeriesChart } from "@omarchy/ui/react";
 | `OmDataList` (stack / rows / table + pagination) | ✅ | ✅ |
 | `OmPageHeader` / `OmThemeToggle` / `OmThemeScript` | ✅ | ✅ (script is Astro-only) |
 
-Full prop reference: [`packages/ui/README.md`](packages/ui/README.md).
+Full prop reference: [`API.md`](API.md).
 
 ## Storyboard
 
@@ -122,14 +123,17 @@ the Vercel "Root Directory" at the repository root** — do not set it to
 
 ```sh
 npm test           # 34 unit tests over the core geometry, scales and pagination
+npm run typecheck  # tsc over the library, including the React renderers
+npm run check      # astro check over the storyboard
 ```
 
 The chart palettes are validated rather than eyeballed — see
-[`packages/ui/README.md#palettes`](packages/ui/README.md#palettes) for the
+[`API.md#palettes`](API.md#palettes) for the
 numbers and the re-validation command.
 
 ## Adding a component
 
+0. Everything lives under `src/` at the repo root.
 1. Tokens first — if it needs a colour that is not in the contract, add it to
    **both** theme files before writing markup.
 2. Put any real logic in `src/core/` as a pure function, with tests.
