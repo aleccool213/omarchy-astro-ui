@@ -276,3 +276,10 @@ test("niceScale never returns more ticks than asked for, plus one", () => {
     assert.ok(s.ticks.length <= 6, `niceScale(${min},${max}) produced ${s.ticks.length} ticks`);
   }
 });
+
+test("formatNumber locale groups thousands", () => {
+  assert.equal(formatNumber(3386, "locale"), "3,386");
+  assert.equal(formatNumber(999, "locale"), "999");
+  assert.equal(formatNumber(1234567, "locale"), "1,234,567");
+  assert.equal(formatNumber(3386, "int"), "3386", "int stays ungrouped for axis ticks");
+});

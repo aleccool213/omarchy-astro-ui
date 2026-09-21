@@ -1,6 +1,6 @@
 /** Number and date helpers shared by every renderer. No DOM, no framework. */
 
-export type NumberFormat = "int" | "fixed1" | "fixed2" | "k" | "compact" | "percent";
+export type NumberFormat = "int" | "fixed1" | "fixed2" | "k" | "compact" | "percent" | "locale";
 
 export function formatNumber(n: number, format: NumberFormat = "int"): string {
   if (!Number.isFinite(n)) return "–";
@@ -14,6 +14,10 @@ export function formatNumber(n: number, format: NumberFormat = "int"): string {
     case "k":
       if (Math.abs(n) >= 1000) return `${(n / 1000).toFixed(Math.abs(n) >= 10000 ? 0 : 1)}k`;
       return String(Math.round(n));
+    case "locale":
+      // Grouped thousands: "3,386". Deliberately not the default, because axis
+      // ticks are tighter for space than a stat value is.
+      return new Intl.NumberFormat("en-CA").format(n);
     case "compact":
       return new Intl.NumberFormat("en-CA", { notation: "compact", maximumFractionDigits: 1 }).format(n);
     case "int":

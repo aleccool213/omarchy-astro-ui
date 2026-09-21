@@ -1,0 +1,18 @@
+/* Tokens + components, WITHOUT the base layer.
+ *
+ * Use this when adding @omarchy/ui to an app that already has its own reset,
+ * body styling and typography — it adds only the om- classes and the token
+ * contract, and touches nothing the app already owns. Pair it with a theme:
+ *
+ *   @import "@omarchy/ui/components.css";
+ *   @import "@omarchy/ui/themes/lupine.css";
+ *
+ * New apps should use styles.css instead, which adds base.css on top of this.
+ */
+@import "./tokens.css";
+@import "./components/stat.css";
+@import "./components/chart.css";
+@import "./components/heatmap.css";
+@import "./components/list.css";
+@import "./components/shell.css";
+@import "./components/tooltip.css";

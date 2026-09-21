@@ -7,6 +7,7 @@ Tokens, themes and components for the omarchy-flavoured personal apps.
 | Import | What |
 |---|---|
 | `@omarchy/ui/styles.css` | tokens + base + every component stylesheet |
+| `@omarchy/ui/components.css` | tokens + components, **no base layer** — for an app that already has its own reset and body styles |
 | `@omarchy/ui/themes/lupine.css` | light + dark periwinkle theme |
 | `@omarchy/ui/themes/tokyo-night.css` | dark-only Tokyo Night theme |
 | `@omarchy/ui/fonts.css` | the one canonical Google Fonts import |
@@ -47,7 +48,7 @@ regardless of stylesheet order.
 | `label` | `string` | — | |
 | `value` | `string \| number \| null` | — | `null` renders an en dash |
 | `unit` | `string` | — | |
-| `format` | `NumberFormat` | `"int"` | `int \| fixed1 \| fixed2 \| k \| compact \| percent` |
+| `format` | `NumberFormat` | `"int"` | `int \| locale \| fixed1 \| fixed2 \| k \| compact \| percent`. `locale` groups thousands ("3,386"); `int` does not, because axis ticks are tighter for space |
 | `hint` | `string` | — | adds a `?` with a tooltip |
 | `delta` | `number \| null` | `null` | |
 | `deltaFormat` | `NumberFormat` | `"fixed1"` | |

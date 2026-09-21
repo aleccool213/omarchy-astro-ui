@@ -1,12 +1,9 @@
-/* Structure + components. Pair with exactly one theme:
+/* Everything: tokens, base layer and components. Pair with exactly one theme:
  *   @import "@omarchy/ui/styles.css";
  *   @import "@omarchy/ui/themes/lupine.css";
+ *
+ * Adding the library to an app that already has its own reset and body styles?
+ * Use components.css instead — same components, no base layer.
  */
-@import "./tokens.css";
+@import "./components.css";
 @import "./base.css";
-@import "./components/stat.css";
-@import "./components/chart.css";
-@import "./components/heatmap.css";
-@import "./components/list.css";
-@import "./components/shell.css";
-@import "./components/tooltip.css";

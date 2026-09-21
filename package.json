@@ -9,10 +9,17 @@
     "url": "git+https://github.com/aleccool213/omarchy-astro-ui.git"
   },
   "private": false,
-  "sideEffects": ["*.css"],
-  "files": ["src", "README.md", "API.md"],
+  "sideEffects": [
+    "*.css"
+  ],
+  "files": [
+    "src",
+    "README.md",
+    "API.md"
+  ],
   "exports": {
     "./styles.css": "./src/styles/index.css",
+    "./components.css": "./src/styles/components.css",
     "./fonts.css": "./src/styles/fonts.css",
     "./compat.css": "./src/styles/compat.css",
     "./themes/*.css": "./src/styles/themes/*.css",
@@ -21,7 +28,9 @@
     "./client/*": "./src/client/*",
     "./react": "./src/react/index.ts"
   },
-  "workspaces": ["apps/*"],
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
     "dev": "npm run dev --workspace=@omarchy/storyboard",
     "build": "npm run build --workspace=@omarchy/storyboard",
@@ -36,9 +45,15 @@
     "react-dom": ">=18"
   },
   "peerDependenciesMeta": {
-    "astro": { "optional": true },
-    "react": { "optional": true },
-    "react-dom": { "optional": true }
+    "astro": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/node": "^22.16.5",
