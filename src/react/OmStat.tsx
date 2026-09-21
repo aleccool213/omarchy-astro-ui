@@ -1,5 +1,6 @@
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { formatNumber, type NumberFormat } from "../core/format.ts";
+import { mountTips } from "../client/hover.ts";
 
 export interface OmStatProps {
   label: string;
@@ -26,6 +27,12 @@ export function OmStat({
   className,
   children,
 }: OmStatProps) {
+  // The hint is a tooltip trigger, so the component that renders it mounts the
+  // tooltip. mountTips is idempotent and delegated, so N stats cost one binding.
+  useEffect(() => {
+    if (hint) mountTips();
+  }, [hint]);
+
   const display = value == null ? "–" : typeof value === "number" ? formatNumber(value, format) : value;
   const direction = delta == null || delta === 0 ? "flat" : delta > 0 ? "up" : "down";
   const tone =

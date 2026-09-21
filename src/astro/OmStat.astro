@@ -57,3 +57,12 @@ const arrow = direction === "up" ? "▲" : direction === "down" ? "▼" : "–";
   </div>
   <slot />
 </div>
+
+{/* The hint is a tooltip trigger, so the component that renders it is what
+    mounts the tooltip. Astro bundles this once per page however many stats
+    are on it. */}
+<script>
+  import { mountTips } from "../client/hover.ts";
+  mountTips();
+  document.addEventListener("astro:page-load", () => mountTips());
+</script>
