@@ -1,4 +1,7 @@
+/* The chart root is a <figure>, which browsers give margin: 1em 40px. Without
+ * this reset every chart sat 40px in from both edges of its container. */
 .om-chart {
+  margin: 0;
   min-width: 0;
   background: var(--om-surface);
   border: 1px solid var(--om-line);
