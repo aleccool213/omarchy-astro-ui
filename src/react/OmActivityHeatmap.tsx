@@ -17,7 +17,9 @@ export interface OmActivityHeatmapProps extends HeatmapOptions {
   className?: string;
 }
 
-const DOW = ["M", "", "W", "", "F", "", "S"];
+// Mon/Wed/Fri only, the calendar-heatmap convention. Labelling Sunday "S"
+// while Saturday stays blank reads as either day.
+const DOW = ["M", "", "W", "", "F", "", ""];
 
 export function OmActivityHeatmap({
   values,

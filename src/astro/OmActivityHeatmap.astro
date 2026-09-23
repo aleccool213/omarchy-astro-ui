@@ -29,7 +29,9 @@ const {
 } = Astro.props;
 
 const geo = buildHeatmap(values, options);
-const DOW = ["M", "", "W", "", "F", "", "S"];
+// Mon/Wed/Fri only, the calendar-heatmap convention. Labelling Sunday "S"
+// while Saturday stays blank reads as either day.
+const DOW = ["M", "", "W", "", "F", "", ""];
 
 function tip(date: string, value: number): string {
   if (formatTip) return formatTip({ date, value });
