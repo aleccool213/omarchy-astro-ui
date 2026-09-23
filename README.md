@@ -37,17 +37,24 @@ React runtime into three currently zero-JS sites, so instead:
 
 ## Install
 
-Not on npm yet, and it does not need to be — install it straight from GitHub:
+Not on npm yet, and it does not need to be — install a tagged release straight
+from GitHub:
 
 ```jsonc
 // package.json
 "dependencies": {
-  "@omarchy/ui": "github:aleccool213/omarchy-astro-ui#main"
+  "@omarchy/ui": "github:aleccool213/omarchy-astro-ui#v0.2.0"
 }
 ```
 
-Pin a tag (`#v0.1.0`) once the API stops moving, so an app does not pick up a
-breaking change on its next `npm install`. If you do publish later:
+**Pin a tag, not `#main`.** npm treats an unchanged `#main` as already
+satisfied, so neither a local `npm install` nor a CI build with cached
+`node_modules` will fetch new commits. Changing the tag in `package.json` is
+what forces the fetch, and it means a library push never changes an app until
+that app opts in. Releases are listed in [`CHANGELOG.md`](CHANGELOG.md).
+
+To cut a release: bump `version` in `package.json`, add a CHANGELOG entry, then
+`git tag vX.Y.Z && git push origin vX.Y.Z`. If you do publish to npm later:
 `npm publish --access public`.
 
 Astro needs one line of config, because the package is source rather than a

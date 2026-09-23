@@ -7,7 +7,7 @@ proves the whole pipeline on the lowest-risk app.
 
 The app with the most duplication and no build complexity.
 
-1. Add `"@omarchy/ui": "github:aleccool213/omarchy-astro-ui#main"` and the
+1. Add `"@omarchy/ui": "github:aleccool213/omarchy-astro-ui#v0.2.0"` and the
    `vite.ssr.noExternal` line in `astro.config.mjs`.
 2. In `src/layouts/Base.astro`, replace the inline no-flash script with
    `<OmThemeScript />` and import `styles.css` + `themes/lupine.css` +
