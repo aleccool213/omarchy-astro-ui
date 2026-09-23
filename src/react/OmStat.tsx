@@ -11,6 +11,9 @@ export interface OmStatProps {
   delta?: number | null;
   deltaFormat?: NumberFormat;
   goodDirection?: "up" | "down";
+  /** "inline" (default) keeps the unit on the figure's line; "block" drops it
+   *  underneath, which reads better for a long unit like "hours avg". */
+  unitPlacement?: "inline" | "block";
   className?: string;
   children?: ReactNode;
 }
@@ -24,6 +27,7 @@ export function OmStat({
   delta = null,
   deltaFormat = "fixed1",
   goodDirection = "up",
+  unitPlacement = "inline",
   className,
   children,
 }: OmStatProps) {
@@ -40,7 +44,11 @@ export function OmStat({
   const arrow = direction === "up" ? "▲" : direction === "down" ? "▼" : "–";
 
   return (
-    <div className={["om-stat", className].filter(Boolean).join(" ")}>
+    <div
+      className={["om-stat", unitPlacement === "block" && "om-stat--unit-block", className]
+        .filter(Boolean)
+        .join(" ")}
+    >
       <div className="om-stat__label">
         <span>{label}</span>
         {hint && (

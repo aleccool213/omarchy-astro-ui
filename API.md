@@ -53,6 +53,7 @@ regardless of stylesheet order.
 | `delta` | `number \| null` | `null` | |
 | `deltaFormat` | `NumberFormat` | `"fixed1"` | |
 | `goodDirection` | `"up" \| "down"` | `"up"` | which sign is green; the arrow still follows the sign |
+| `unitPlacement` | `"inline" \| "block"` | `"inline"` | `block` drops the unit onto its own line under the figure; the delta stays on the figure's line either way |
 
 `OmStatGrid` takes `cols` (default 2) and `colsSm` (default 3).
 

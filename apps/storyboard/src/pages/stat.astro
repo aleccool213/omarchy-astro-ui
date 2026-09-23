@@ -49,6 +49,20 @@ import OmStatGrid from "@omarchy/ui/astro/OmStatGrid.astro";
   </Demo>
 
   <Demo
+    title="Unit placement"
+    note="<code>inline</code> is the default and suits a short unit. <code>block</code> drops the unit under the figure, which reads better when the unit is a phrase — and is what health-board uses, since that is how its tiles looked before the migration. A delta stays on the figure's line either way."
+    code={`<OmStat label="Sleep" value={7.16} unit="hours avg" />
+<OmStat label="Sleep" value={7.16} unit="hours avg" unitPlacement="block" />`}
+  >
+    <OmStatGrid cols={2} colsSm={4}>
+      <OmStat label="Sleep · inline" value={7.16} format="fixed2" unit="hours avg" />
+      <OmStat label="Sleep · block" value={7.16} format="fixed2" unit="hours avg" unitPlacement="block" />
+      <OmStat label="With delta · inline" value={61} unit="bpm" delta={-1.4} goodDirection="down" />
+      <OmStat label="With delta · block" value={61} unit="bpm" delta={-1.4} goodDirection="down" unitPlacement="block" />
+    </OmStatGrid>
+  </Demo>
+
+  <Demo
     title="Edge cases"
     note="Missing values render an en dash rather than <code>NaN</code> or an empty tile, and a stat can carry a sparkline in its default slot."
     code={`<OmStat label="Sleep" value={null} unit="h" />

@@ -26,7 +26,14 @@
   letter-spacing: 0.08em;
 }
 
+/* Flex so the unit can be pushed onto its own line without taking the delta
+ * with it — see .om-stat--unit-block below. The bare value is an anonymous
+ * flex item, which keeps it first at the default order. */
 .om-stat__value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.35rem;
   margin-top: var(--om-space-1);
   font-family: var(--om-font-display);
   font-size: var(--om-text-xl);
@@ -41,11 +48,21 @@
   font-size: var(--om-text-sm);
 }
 
+/* unitPlacement="block": the unit drops to its own line under the figure.
+ * order:1 keeps it after the delta, and flex-basis:100% is what forces the
+ * wrap, so the delta stays on the figure's line rather than being pushed to a
+ * third row. */
+.om-stat--unit-block .om-stat__unit {
+  order: 1;
+  flex-basis: 100%;
+  line-height: 1.45;
+}
+
 .om-stat__delta {
   display: inline-flex;
   align-items: center;
   gap: 0.2em;
-  margin-left: var(--om-space-2);
+  margin-left: var(--om-space-1);
   font-size: var(--om-text-sm);
   font-variant-numeric: tabular-nums;
 }

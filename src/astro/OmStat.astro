@@ -14,6 +14,9 @@ export interface Props {
   deltaFormat?: NumberFormat;
   /** "up" (default) means a rise is good; "down" suits resting HR or spend. */
   goodDirection?: "up" | "down";
+  /** "inline" (default) keeps the unit on the figure's line; "block" drops it
+   *  underneath, which reads better for a long unit like "hours avg". */
+  unitPlacement?: "inline" | "block";
   class?: string;
 }
 
@@ -26,6 +29,7 @@ const {
   delta = null,
   deltaFormat = "fixed1",
   goodDirection = "up",
+  unitPlacement = "inline",
   class: className,
 } = Astro.props;
 
@@ -38,7 +42,7 @@ const tone =
 const arrow = direction === "up" ? "▲" : direction === "down" ? "▼" : "–";
 ---
 
-<div class:list={["om-stat", className]}>
+<div class:list={["om-stat", unitPlacement === "block" && "om-stat--unit-block", className]}>
   <div class="om-stat__label">
     <span>{label}</span>
     {hint && (
