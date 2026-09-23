@@ -43,6 +43,30 @@ import OmActivityHeatmap from "@omarchy/ui/astro/OmActivityHeatmap.astro";
   </Demo>
 
   <Demo
+    title="Custom tooltip and cell size"
+    note="<code>formatTip</code> replaces the tooltip text when a day carries detail the count alone does not — which workout it was, how far, who logged it. <code>cellSize</code> raises the 20px cap for a chunkier grid; cells still shrink on a narrow screen."
+    code={`<OmActivityHeatmap
+  values={workoutDays}
+  cellSize="34px"
+  formatTip={({ date, value }) =>
+    value ? \`\${date} · \${value} session\${value === 1 ? "" : "s"} · Row\` : \`\${date} · rest\`
+  }
+/>`}
+  >
+    <OmActivityHeatmap
+      values={workoutDays}
+      weeks={13}
+      end="2026-09-20"
+      cellSize="34px"
+      thresholds={[1, 2, 3]}
+      formatTip={({ date, value }) =>
+        value ? `${date} · ${value} session${value === 1 ? "" : "s"} logged` : `${date} · rest`
+      }
+      caption="Chunkier cells, and a tooltip the app supplies."
+    />
+  </Demo>
+
+  <Demo
     title="No data"
     note="An empty dataset renders the grid at level 0 rather than collapsing or dividing by a zero maximum."
     code={`<OmActivityHeatmap values={{}} weeks={13} />`}

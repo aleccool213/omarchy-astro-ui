@@ -105,6 +105,8 @@ Behaviour worth knowing:
 | `timeZone` | `string` | system |
 | `thresholds` | `number[]` | quartiles of the observed max |
 | `noun` | `[string, string]` | `["entry", "entries"]` |
+| `formatTip` | `(cell: { date, value }) => string` | — | replaces the tooltip text, for days carrying detail the count alone does not |
+| `cellSize` | `string` | `20px` | upper bound on cell size; cells still shrink on narrow screens |
 
 Columns are always whole Monday-start weeks; dates are UTC-anchored so a cell
 never shifts when the viewer changes timezone. Days after `end` render blank.

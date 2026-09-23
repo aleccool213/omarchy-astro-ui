@@ -8,6 +8,12 @@ export interface OmActivityHeatmapProps extends HeatmapOptions {
   noun?: [string, string];
   format?: NumberFormat;
   caption?: string;
+  /** Replace the tooltip text entirely. Use it when a day carries detail the
+   *  count alone does not — which workout it was, how far, who logged it. */
+  formatTip?: (cell: { date: string; value: number }) => string;
+  /** Upper bound on a cell's size. Cells still shrink to fit a narrow screen;
+   *  this only stops a short calendar from ballooning on a wide one. */
+  cellSize?: string;
   className?: string;
 }
 
@@ -18,6 +24,8 @@ export function OmActivityHeatmap({
   noun = ["entry", "entries"],
   format = "int",
   caption,
+  formatTip,
+  cellSize,
   className,
   ...options
 }: OmActivityHeatmapProps) {
@@ -31,13 +39,22 @@ export function OmActivityHeatmap({
   }, []);
 
   const tip = (date: string, value: number): string => {
+    if (formatTip) return formatTip({ date, value });
     if (value <= 0) return `${formatDateLong(date)} · nothing logged`;
     return `${formatDateLong(date)} · ${formatNumber(value, format)} ${value === 1 ? noun[0] : noun[1]}`;
   };
 
   return (
     <div className={["om-heatmap", className].filter(Boolean).join(" ")}>
-      <div className="om-heatmap__frame" style={{ "--om-weeks": geo.weeks.length } as React.CSSProperties}>
+      <div
+        className="om-heatmap__frame"
+        style={
+          {
+            "--om-weeks": geo.weeks.length,
+            ...(cellSize ? { "--om-cell-max": cellSize } : {}),
+          } as React.CSSProperties
+        }
+      >
         <div className="om-heatmap__dow" aria-hidden="true">
           <span />
           {DOW.map((d, i) => (

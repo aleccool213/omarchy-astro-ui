@@ -6,6 +6,12 @@ export interface Props extends HeatmapOptions {
   values: Record<string, number> | Map<string, number>;
   /** Singular/plural noun for the tooltip, e.g. ["workout", "workouts"]. */
   noun?: [string, string];
+  /** Replace the tooltip text entirely. Use it when a day carries detail the
+   *  count alone does not — which workout it was, how far, who logged it. */
+  formatTip?: (cell: { date: string; value: number }) => string;
+  /** Upper bound on a cell's size. Cells still shrink to fit a narrow screen;
+   *  this only stops a short calendar from ballooning on a wide one. */
+  cellSize?: string;
   format?: NumberFormat;
   caption?: string;
   class?: string;
@@ -16,6 +22,8 @@ const {
   noun = ["entry", "entries"],
   format = "int",
   caption,
+  formatTip,
+  cellSize,
   class: className,
   ...options
 } = Astro.props;
@@ -24,6 +32,7 @@ const geo = buildHeatmap(values, options);
 const DOW = ["M", "", "W", "", "F", "", "S"];
 
 function tip(date: string, value: number): string {
+  if (formatTip) return formatTip({ date, value });
   if (value <= 0) return `${formatDateLong(date)} · nothing logged`;
   const label = value === 1 ? noun[0] : noun[1];
   return `${formatDateLong(date)} · ${formatNumber(value, format)} ${label}`;
@@ -31,7 +40,10 @@ function tip(date: string, value: number): string {
 ---
 
 <div class:list={["om-heatmap", className]}>
-  <div class="om-heatmap__frame" style={`--om-weeks:${geo.weeks.length}`}>
+  <div
+    class="om-heatmap__frame"
+    style={`--om-weeks:${geo.weeks.length}${cellSize ? `;--om-cell-max:${cellSize}` : ""}`}
+  >
     <div class="om-heatmap__dow" aria-hidden="true">
       <span></span>
       {DOW.map((d) => <span>{d}</span>)}
