@@ -46,6 +46,9 @@
 .om-stat__unit {
   color: var(--om-fg-muted);
   font-size: var(--om-text-sm);
+  /* The value row is 600; a unit is secondary information and inherited that
+   * weight, which read as a second bold word next to the figure. */
+  font-weight: 400;
 }
 
 /* unitPlacement="block": the unit drops to its own line under the figure.
