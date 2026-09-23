@@ -12,7 +12,8 @@ export function formatNumber(n: number, format: NumberFormat = "int"): string {
     case "percent":
       return `${Math.round(n)}%`;
     case "k":
-      if (Math.abs(n) >= 1000) return `${(n / 1000).toFixed(Math.abs(n) >= 10000 ? 0 : 1)}k`;
+      // "5k", not "5.0k" — a round thousand should read as one.
+      if (Math.abs(n) >= 1000) return `${(n / 1000).toFixed(Math.abs(n) >= 10000 ? 0 : 1).replace(/\.0$/, "")}k`;
       return String(Math.round(n));
     case "locale":
       // Grouped thousands: "3,386". Deliberately not the default, because axis

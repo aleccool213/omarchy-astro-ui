@@ -38,8 +38,17 @@ function nextNiceStep(step: number): number {
 /**
  * @param zeroBased force the axis to include 0 (bars must, lines must not —
  *        a line chart zoomed to its data is the point of a line chart).
+ * @param minStep smallest tick step allowed. Pass 1 for counts: a count axis
+ *        with a 0.25 step either shows fractional workouts or, rounded, shows
+ *        "0, 0, 1, 1, 1".
  */
-export function niceScale(rawMin: number, rawMax: number, tickCount = 4, zeroBased = false): NiceScale {
+export function niceScale(
+  rawMin: number,
+  rawMax: number,
+  tickCount = 4,
+  zeroBased = false,
+  minStep = 0,
+): NiceScale {
   let min = Number.isFinite(rawMin) ? rawMin : 0;
   let max = Number.isFinite(rawMax) ? rawMax : 1;
   if (min > max) [min, max] = [max, min];
@@ -50,13 +59,18 @@ export function niceScale(rawMin: number, rawMax: number, tickCount = 4, zeroBas
 
   // A flat series still deserves a readable axis rather than a divide-by-zero.
   if (min === max) {
-    const pad = Math.abs(min) > 0 ? Math.abs(min) * 0.1 : 1;
-    min -= pad;
-    max += pad;
-    if (zeroBased) min = Math.min(0, min);
+    if (zeroBased) {
+      // Only an all-zero series is still flat after zero-basing. It is a count
+      // with nothing in it, so 0..1 — not the -1..1 that padding would give.
+      max = 1;
+    } else {
+      const pad = Math.abs(min) > 0 ? Math.abs(min) * 0.1 : 1;
+      min -= pad;
+      max += pad;
+    }
   }
 
-  let step = niceNum(niceNum(max - min, false) / Math.max(1, tickCount), true);
+  let step = Math.max(minStep, niceNum(niceNum(max - min, false) / Math.max(1, tickCount), true));
   let niceMin = Math.floor(min / step) * step;
   let niceMax = Math.ceil(max / step) * step;
 

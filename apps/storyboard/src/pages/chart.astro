@@ -3,7 +3,7 @@ import Story from "../layouts/Story.astro";
 import Demo from "../components/Demo.astro";
 import OmTimeSeriesChart from "@omarchy/ui/astro/OmTimeSeriesChart.astro";
 import OmSparkline from "@omarchy/ui/astro/OmSparkline.astro";
-import { steps, sleep, restingHr, weeklyVolume, allocation, accounts } from "../data/samples";
+import { steps, sleep, restingHr, hrv, weeklyVolume, allocation, accounts } from "../data/samples";
 ---
 
 <Story
@@ -76,6 +76,14 @@ points: [{ label: "8/16", value: null, tip: "no nights logged" }]`}
     code={`<OmTimeSeriesChart title="Resting HR" unit="bpm" reverseY series={[…]} />`}
   >
     <OmTimeSeriesChart title="Resting heart rate" unit="bpm" reverseY series={[{ key: "rhr", label: "Resting HR", points: restingHr }]} />
+  </Demo>
+
+  <Demo
+    title="Markers"
+    note="<code>markers</code> dots every point on a line or area. Off by default — on a long daily series the dots merge into a second line — but on a short weekly series they show exactly where the readings are."
+    code={`<OmTimeSeriesChart title="HRV" unit="ms" markers series={[…]} />`}
+  >
+    <OmTimeSeriesChart title="HRV" unit="ms" markers series={[{ key: "hrv", label: "HRV", points: hrv }]} />
   </Demo>
 
   <Demo

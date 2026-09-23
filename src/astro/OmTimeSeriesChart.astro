@@ -13,6 +13,9 @@ export interface Props {
   note?: string;
   /** Lower is better (pace, resting HR). */
   reverseY?: boolean;
+  /** Dot every point on a line or area. Off by default: on a long daily
+   *  series the dots merge into a second line. Worth it on a short weekly one. */
+  markers?: boolean;
   /** Drop the card chrome and render the plot alone. */
   bare?: boolean;
   /** The table view is the accessibility fallback and the contrast relief the
@@ -32,6 +35,7 @@ const {
   width = 640,
   note,
   reverseY = false,
+  markers = false,
   bare = false,
   table = true,
   class: className,
@@ -99,10 +103,16 @@ const titleId = title ? `om-chart-${Math.random().toString(36).slice(2, 8)}` : u
           {s.bars.map((b) => (
             <rect class="om-chart__bar" x={b.x} y={b.y} width={b.width} height={b.height} fill={s.colorVar} />
           ))}
-          {/* A single point has no line to draw, so give it a mark of its own. */}
-          {s.segments.length === 0 && s.bars.length === 0 && s.markers.map((m) => (
-            <circle cx={m.x} cy={m.y} r="3" fill={s.colorVar} />
-          ))}
+          {markers && kind !== "bar" ? (
+            s.markers.map((m) => (
+              <circle class="om-chart__marker" cx={m.x} cy={m.y} r="3.5" fill={s.colorVar} />
+            ))
+          ) : (
+            /* A single point has no line to draw, so give it a mark of its own. */
+            s.segments.length === 0 && s.bars.length === 0 && s.markers.map((m) => (
+              <circle cx={m.x} cy={m.y} r="3" fill={s.colorVar} />
+            ))
+          )}
         </g>
       ))}
 

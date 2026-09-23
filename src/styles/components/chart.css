@@ -93,6 +93,13 @@
  * that both renderers and the client script can express identically. */
 .om-hidden { display: none !important; }
 
+/* A surface ring keeps a marker legible where it sits on the line and where
+ * two series cross. */
+.om-chart__marker {
+  stroke: var(--om-surface);
+  stroke-width: 1.5;
+}
+
 .om-chart__crosshair {
   stroke: var(--om-fg-subtle);
   stroke-width: 1;

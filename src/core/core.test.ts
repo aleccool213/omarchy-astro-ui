@@ -283,3 +283,32 @@ test("formatNumber locale groups thousands", () => {
   assert.equal(formatNumber(1234567, "locale"), "1,234,567");
   assert.equal(formatNumber(3386, "int"), "3386", "int stays ungrouped for axis ticks");
 });
+
+test("an int axis never ticks between integers", () => {
+  // health-board's "workouts by day" rendered 0, 0, 1, 1, 1 from quarter steps
+  const g = buildChart(
+    [{ key: "w", label: "Workouts", points: [{ label: "a", value: 0 }, { label: "b", value: 1 }] }],
+    { kind: "bar", format: "int" },
+  );
+  assert.deepEqual(g.yTicks.map((t) => t.label), ["0", "1"]);
+  assert.equal(g.scale.max, 1, "a bar of 1 should reach the top gridline, not stop short of it");
+});
+
+test("the integer floor applies only to int, not to fractional formats", () => {
+  const points = [{ label: "a", value: 6.2 }, { label: "b", value: 6.9 }];
+  const frac = buildChart([{ key: "s", label: "Sleep", points }], { format: "fixed1" });
+  const int = buildChart([{ key: "s", label: "Sleep", points }], { format: "int" });
+  assert.ok(frac.scale.step < 1, `fixed1 should keep a sub-1 step, got ${frac.scale.step}`);
+  assert.equal(int.scale.step, 1, "int should be floored to a whole step");
+});
+
+test("niceScale gives an all-zero count a 0..1 axis", () => {
+  const s = niceScale(0, 0, 4, true, 1);
+  assert.equal(s.min, 0, "a count with nothing in it must not grow a negative axis");
+  assert.equal(s.max, 1);
+});
+
+test("k-notation drops a trailing .0", () => {
+  assert.equal(formatNumber(5000, "k"), "5k");
+  assert.equal(formatNumber(5300, "k"), "5.3k");
+});

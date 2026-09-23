@@ -14,6 +14,9 @@ export interface OmTimeSeriesChartProps {
   width?: number;
   note?: string;
   reverseY?: boolean;
+  /** Dot every point on a line or area. Off by default: on a long daily
+   *  series the dots merge into a second line. Worth it on a short weekly one. */
+  markers?: boolean;
   bare?: boolean;
   table?: boolean;
   className?: string;
@@ -29,6 +32,7 @@ export function OmTimeSeriesChart({
   width = 640,
   note,
   reverseY = false,
+  markers = false,
   bare = false,
   table = true,
   className,
@@ -130,9 +134,13 @@ export function OmTimeSeriesChart({
                   fill={s.colorVar}
                 />
               ))}
-              {s.segments.length === 0 &&
-                s.bars.length === 0 &&
-                s.markers.map((m) => <circle key={m.index} cx={m.x} cy={m.y} r={3} fill={s.colorVar} />)}
+              {markers && kind !== "bar"
+                ? s.markers.map((m) => (
+                    <circle key={m.index} className="om-chart__marker" cx={m.x} cy={m.y} r={3.5} fill={s.colorVar} />
+                  ))
+                : s.segments.length === 0 &&
+                  s.bars.length === 0 &&
+                  s.markers.map((m) => <circle key={m.index} cx={m.x} cy={m.y} r={3} fill={s.colorVar} />)}
             </g>
           ))}
 

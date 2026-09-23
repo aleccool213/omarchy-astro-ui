@@ -129,6 +129,9 @@ export function buildChart(input: ChartSeries[], options: ChartOptions = {}): Ch
     empty ? 1 : Math.max(...allValues),
     spark ? 2 : (options.tickCount ?? 4),
     zeroBased,
+    // An "int" axis never ticks between integers: those ticks would either
+    // print as fractions or, rounded, repeat the same label.
+    format === "int" ? 1 : 0,
   );
 
   // Left padding has to fit the widest y label, or the axis clips.

@@ -67,6 +67,7 @@ regardless of stylesheet order.
 | `format` | `NumberFormat` | `"int"` |
 | `width` `height` | `number` | `640` / `220` |
 | `reverseY` | `boolean` | `false` |
+| `markers` | `boolean` | `false` |
 | `bare` | `boolean` | `false` |
 | `table` | `boolean` | `true` |
 
