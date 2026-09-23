@@ -13,6 +13,10 @@
  * ------------------------------------------------------------------------- */
 
 :root {
+  /* Native scrollbars and form controls follow the mode. Without this they
+   * stayed light in dark mode for any app not importing base.css. */
+  color-scheme: light;
+
   --om-bg: #fafafa;
   --om-bg-deep: #f0f0f0;
   --om-surface: #ffffff;
@@ -51,6 +55,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
+    color-scheme: dark;
     --om-bg: #121212;
     --om-bg-deep: #0a0a0a;
     --om-surface: #1a1a1a;
@@ -89,6 +94,7 @@
 }
 
 :root.dark {
+  color-scheme: dark;
   --om-bg: #121212;
   --om-bg-deep: #0a0a0a;
   --om-surface: #1a1a1a;

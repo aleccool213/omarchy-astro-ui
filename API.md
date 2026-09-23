@@ -136,6 +136,8 @@ the markup and styles are the same.
 
 ### `OmPageHeader` / `OmThemeToggle` / `OmThemeScript`
 
+`OmThemeScript` takes `legacyKey` — an app's pre-library storage key. A saved choice there is copied to `om-theme` once and the old entry removed, so adopting the shared key does not reset anyone's light/dark preference. It also records its key on `<html>`, so every toggle writes to the key the script reads.
+
 `OmThemeScript` must sit in `<head>` before any stylesheet — it writes `.dark`
 or `.light` onto `<html>` synchronously, which is what prevents the flash. One
 storage key, `om-theme`, for every app.

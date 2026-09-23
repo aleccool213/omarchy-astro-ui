@@ -5,6 +5,7 @@ import { paginate, pageWindow } from "./paginate.ts";
 import { buildChart } from "./series.ts";
 import { buildHeatmap } from "./heatmap.ts";
 import { addDaysISO, mondayOf, weekdayIndex, formatTick, formatNumber } from "./format.ts";
+import { noFlashScript } from "./theme.ts";
 
 test("niceScale lands on round steps", () => {
   const s = niceScale(3, 97, 4);
@@ -311,4 +312,60 @@ test("niceScale gives an all-zero count a 0..1 axis", () => {
 test("k-notation drops a trailing .0", () => {
   assert.equal(formatNumber(5000, "k"), "5k");
   assert.equal(formatNumber(5300, "k"), "5.3k");
+});
+
+
+/** Run the generated no-flash snippet against stubbed browser globals. */
+function runNoFlash(src: string, store: Record<string, string>, prefersDark = false, storageThrows = false) {
+  const classes = new Set<string>();
+  const dataset: Record<string, string> = {};
+  const documentElement = {
+    dataset,
+    classList: { toggle: (c: string, on: boolean) => (on ? classes.add(c) : classes.delete(c)) },
+  };
+  const localStorage = {
+    getItem: (k: string) => {
+      if (storageThrows) throw new Error("SecurityError");
+      return k in store ? store[k] : null;
+    },
+    setItem: (k: string, v: string) => void (store[k] = v),
+    removeItem: (k: string) => void delete store[k],
+  };
+  const window = { localStorage, matchMedia: () => ({ matches: prefersDark }) };
+  new Function("window", "document", src)(window, { documentElement });
+  return { classes, dataset, store };
+}
+
+test("no-flash carries a legacy choice over to the shared key, once", () => {
+  const r = runNoFlash(noFlashScript("om-theme", "health-board-theme"), { "health-board-theme": "dark" });
+  assert.ok(r.classes.has("dark") && !r.classes.has("light"));
+  assert.equal(r.store["om-theme"], "dark", "copied to the shared key");
+  assert.ok(!("health-board-theme" in r.store), "old entry removed");
+});
+
+test("no-flash prefers the shared key over a stale legacy one", () => {
+  const r = runNoFlash(noFlashScript("om-theme", "health-board-theme"), {
+    "om-theme": "light",
+    "health-board-theme": "dark",
+  });
+  assert.ok(r.classes.has("light"));
+  assert.equal(r.store["om-theme"], "light");
+  assert.ok(!("health-board-theme" in r.store), "stale legacy entry still cleaned up");
+});
+
+test("no-flash ignores a junk legacy value", () => {
+  const r = runNoFlash(noFlashScript("om-theme", "old"), { old: "purple" }, true);
+  assert.ok(!("om-theme" in r.store), "nothing but light/dark is carried over");
+  assert.ok(r.classes.has("dark"), "falls through to the OS preference");
+});
+
+test("no-flash follows the OS when nothing is stored", () => {
+  assert.ok(runNoFlash(noFlashScript(), {}, true).classes.has("dark"));
+  assert.ok(runNoFlash(noFlashScript(), {}, false).classes.has("light"));
+});
+
+test("no-flash records its key for the toggles, even when storage throws", () => {
+  const r = runNoFlash(noFlashScript("custom-key"), {}, false, true);
+  assert.equal(r.dataset.omThemeKey, "custom-key");
+  assert.equal(r.classes.size, 0, "no class: the CSS media query takes over");
 });

@@ -10,12 +10,32 @@ export const THEME_KEY = "om-theme";
  * run synchronously during head parsing — a deferred or bundled module runs
  * after first paint, which is the flash it exists to prevent.
  *
- * Sets BOTH classes explicitly so the CSS never has to infer the unset case.
+ * Sets BOTH classes explicitly so the CSS never has to infer the unset case,
+ * and records the storage key on <html> so every toggle on the page writes to
+ * the same key the script read from.
+ *
+ * @param legacyKey an app's pre-library storage key. A stored choice there is
+ *        copied to `key` once and the old entry removed, so switching an app
+ *        onto the shared key does not reset everyone's light/dark preference.
  */
-export function noFlashScript(key: string = THEME_KEY): string {
-  return `(function(){try{var k=${JSON.stringify(key)},t=localStorage.getItem(k),` +
-    `d=t==="dark"||(t!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches),` +
-    `r=document.documentElement;r.classList.toggle("dark",d);r.classList.toggle("light",!d);}catch(e){}})();`;
+export function noFlashScript(key: string = THEME_KEY, legacyKey?: string): string {
+  const migrate = legacyKey
+    ? `if(t===null){var o=s.getItem(${JSON.stringify(legacyKey)});if(o==="dark"||o==="light"){t=o;s.setItem(k,o);}}` +
+      `s.removeItem(${JSON.stringify(legacyKey)});`
+    : "";
+  return (
+    `(function(){var k=${JSON.stringify(key)},r=document.documentElement;r.dataset.omThemeKey=k;` +
+    `try{var s=window.localStorage,t=s.getItem(k);${migrate}` +
+    `var d=t==="dark"||(t!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches);` +
+    `r.classList.toggle("dark",d);r.classList.toggle("light",!d);}catch(e){}})();`
+  );
+}
+
+/** The key the no-flash script stored the theme under, so a toggle never
+ *  writes somewhere the next page load will not read. */
+export function activeThemeKey(): string {
+  if (typeof document === "undefined") return THEME_KEY;
+  return document.documentElement.dataset.omThemeKey || THEME_KEY;
 }
 
 export function currentTheme(key: string = THEME_KEY): ThemeMode {

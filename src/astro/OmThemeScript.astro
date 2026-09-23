@@ -2,12 +2,18 @@
 import { noFlashScript, THEME_KEY } from "../core/theme.ts";
 
 export interface Props {
+  /** Where the choice is stored. Leave it: every app sharing "om-theme" is the
+   *  point. The toggle follows whatever key this script used. */
   storageKey?: string;
+  /** The app's pre-library key, e.g. "health-board-theme". A saved choice there
+   *  is carried over once and the old entry removed, so moving onto the shared
+   *  key does not reset anyone's preference. Safe to leave in place for good. */
+  legacyKey?: string;
 }
-const { storageKey = THEME_KEY } = Astro.props;
+const { storageKey = THEME_KEY, legacyKey } = Astro.props;
 ---
 
 {/* Must sit in <head> before any stylesheet. `is:inline` keeps Astro from
     bundling it into a deferred module, which would run after first paint —
     the flash this exists to prevent. */}
-<script is:inline set:html={noFlashScript(storageKey)}></script>
+<script is:inline set:html={noFlashScript(storageKey, legacyKey)}></script>
