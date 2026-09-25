@@ -48,7 +48,7 @@ regardless of stylesheet order.
 | `label` | `string` | — | |
 | `value` | `string \| number \| null` | — | `null` renders an en dash |
 | `unit` | `string` | — | |
-| `format` | `NumberFormat` | `"int"` | `int \| locale \| fixed1 \| fixed2 \| k \| compact \| percent`. `locale` groups thousands ("3,386"); `int` does not, because axis ticks are tighter for space |
+| `format` | `NumberFormat` | `"int"` | `int \| locale \| fixed1 \| fixed2 \| k \| compact \| percent \| clock`. `locale` groups thousands ("3,386"); `int` does not, because axis ticks are tighter for space. `clock` reads seconds as a time ("2:50.4"), for paces and durations |
 | `hint` | `string` | — | adds a `?` with a tooltip |
 | `delta` | `number \| null` | `null` | |
 | `deltaFormat` | `NumberFormat` | `"fixed1"` | |

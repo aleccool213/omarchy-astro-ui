@@ -369,3 +369,11 @@ test("no-flash records its key for the toggles, even when storage throws", () =>
   assert.equal(r.dataset.omThemeKey, "custom-key");
   assert.equal(r.classes.size, 0, "no class: the CSS media query takes over");
 });
+
+test("formatNumber clock reads seconds as a pace or duration", () => {
+  assert.equal(formatNumber(170.44, "clock"), "2:50.4");
+  assert.equal(formatNumber(59.96, "clock"), "1:00.0", "rounding carries into the minute");
+  assert.equal(formatNumber(3725, "clock"), "1:02:05.0");
+  assert.equal(formatTick(170, 2, "clock"), "2:50", "whole-second steps drop the tenths");
+  assert.equal(formatTick(170.5, 0.5, "clock"), "2:50.5");
+});

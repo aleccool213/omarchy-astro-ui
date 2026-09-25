@@ -1,6 +1,6 @@
 /** Number and date helpers shared by every renderer. No DOM, no framework. */
 
-export type NumberFormat = "int" | "fixed1" | "fixed2" | "k" | "compact" | "percent" | "locale";
+export type NumberFormat = "int" | "fixed1" | "fixed2" | "k" | "compact" | "percent" | "locale" | "clock";
 
 export function formatNumber(n: number, format: NumberFormat = "int"): string {
   if (!Number.isFinite(n)) return "–";
@@ -19,6 +19,8 @@ export function formatNumber(n: number, format: NumberFormat = "int"): string {
       // Grouped thousands: "3,386". Deliberately not the default, because axis
       // ticks are tighter for space than a stat value is.
       return new Intl.NumberFormat("en-CA").format(n);
+    case "clock":
+      return formatClock(n, true);
     case "compact":
       return new Intl.NumberFormat("en-CA", { notation: "compact", maximumFractionDigits: 1 }).format(n);
     case "int":
@@ -30,10 +32,24 @@ export function formatNumber(n: number, format: NumberFormat = "int"): string {
 /** Tick labels need to agree with each other, not just be individually correct:
  *  a 0.5 step must not render "0, 1, 1, 2". Decimals are derived from the step. */
 export function formatTick(value: number, step: number, format: NumberFormat = "int"): string {
+  // A pace axis stepping in whole seconds reads "2:50", not "2:50.0".
+  if (format === "clock") return formatClock(value, step < 1);
   if (format !== "int") return formatNumber(value, format);
   if (step >= 1) return formatNumber(value, "int");
   const decimals = Math.min(4, Math.ceil(-Math.log10(step)));
   return value.toFixed(decimals);
+}
+
+/** Seconds as a clock: 170.4 -> "2:50.4", 3725 -> "1:02:05.0". For paces and
+ *  durations, where "170" on an axis reads as a count rather than a time. */
+function formatClock(seconds: number, tenths: boolean): string {
+  const sign = seconds < 0 ? "-" : "";
+  const total = tenths ? Math.round(Math.abs(seconds) * 10) / 10 : Math.round(Math.abs(seconds));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  const sec = tenths ? s.toFixed(1).padStart(4, "0") : String(s).padStart(2, "0");
+  return h > 0 ? `${sign}${h}:${String(m).padStart(2, "0")}:${sec}` : `${sign}${m}:${sec}`;
 }
 
 const DAY_MS = 86_400_000;

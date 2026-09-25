@@ -1,9 +1,18 @@
 # Changelog
 
-Consumers install from a tag — `"@omarchy/ui": "github:aleccool213/omarchy-astro-ui#v0.2.0"`.
+Consumers install from a tag — `"@omarchy/ui": "github:aleccool213/omarchy-astro-ui#v0.3.0"`.
 To take a new release, change the tag in the app's package.json and run
 `npm install`. Changing the string is what makes npm fetch again: an unchanged
 `#main` is treated as already satisfied, locally and in a cached CI build.
+
+## 0.3.0
+
+Found while moving split-log onto the library.
+
+**Added**
+- `formatNumber` `"clock"` — seconds as a time ("2:50.4", "1:02:05.0"), for
+  paces and durations. Chart axes stepping in whole seconds tick "2:50", so a
+  reversed pace chart reads like the erg's monitor rather than "170".
 
 ## 0.2.0
 

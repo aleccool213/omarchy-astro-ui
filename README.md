@@ -43,7 +43,7 @@ from GitHub:
 ```jsonc
 // package.json
 "dependencies": {
-  "@omarchy/ui": "github:aleccool213/omarchy-astro-ui#v0.2.0"
+  "@omarchy/ui": "github:aleccool213/omarchy-astro-ui#v0.3.0"
 }
 ```
 
