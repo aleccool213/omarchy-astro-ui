@@ -1,0 +1,88 @@
+/* OmStackedBar — one horizontal part-to-whole bar plus its legend. */
+.om-share {
+  margin: 0;
+  min-width: 0;
+  padding: var(--om-space-4);
+  background: var(--om-surface);
+  border: 1px solid var(--om-line);
+  border-radius: var(--om-radius);
+}
+
+.om-share--bare {
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+
+.om-share__title {
+  margin: 0 0 var(--om-space-3);
+  color: var(--om-fg-muted);
+  font-family: var(--om-font-ui);
+  font-size: var(--om-text-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* A 1px gap between segments shows the track through, so two neighbours that
+ * share a slot on purpose still read as two parts. */
+.om-share__bar {
+  display: flex;
+  gap: 1px;
+  height: var(--om-share-h, 10px);
+  overflow: hidden;
+  background: var(--om-surface-2);
+  border-radius: var(--om-radius);
+}
+
+.om-share__seg {
+  flex: 0 0 auto;
+  min-width: 2px;
+}
+
+.om-share__legend {
+  display: grid;
+  gap: var(--om-space-2);
+  margin: var(--om-space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.om-share__legend li {
+  display: grid;
+  grid-template-columns: 0.7rem minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--om-space-3);
+  font-size: var(--om-text-sm);
+}
+
+.om-share__swatch {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: var(--om-radius);
+}
+
+.om-share__pct {
+  color: var(--om-fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.om-share__value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.om-share__notes {
+  margin: var(--om-space-4) 0 0;
+  padding: 0 0 0 1.1rem;
+  font-size: var(--om-text-sm);
+}
+
+.om-share__notes:empty { display: none; }
+
+.om-slot-1 { background: var(--om-series-1); }
+.om-slot-2 { background: var(--om-series-2); }
+.om-slot-3 { background: var(--om-series-3); }
+.om-slot-4 { background: var(--om-series-4); }
+.om-slot-5 { background: var(--om-series-5); }
+.om-slot-6 { background: var(--om-series-6); }

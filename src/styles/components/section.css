@@ -1,0 +1,28 @@
+/* OmSection — a titled block of a page. The heading is a quiet label, not a
+ * headline: the figures under it are the point. */
+.om-section { margin-top: var(--om-section-gap, 2.5rem); min-width: 0; }
+.om-section:first-child { margin-top: 0; }
+
+.om-section__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--om-space-2);
+  margin-bottom: var(--om-space-4);
+}
+
+.om-section__title {
+  margin: 0;
+  color: var(--om-fg-muted);
+  font-family: var(--om-font-display);
+  font-size: var(--om-text-base);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.om-section__note {
+  margin: calc(var(--om-space-4) * -0.5) 0 var(--om-space-4);
+  color: var(--om-fg-muted);
+  font-size: var(--om-text-sm);
+}

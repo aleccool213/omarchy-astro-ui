@@ -1,6 +1,7 @@
 ---
 import type { NumberFormat } from "../core/format.ts";
 import { formatNumber } from "../core/format.ts";
+import { deltaModel } from "../core/delta.ts";
 
 export interface Props {
   label: string;
@@ -12,11 +13,15 @@ export interface Props {
   /** Signed change. Direction is derived unless `goodDirection` says otherwise. */
   delta?: number | null;
   deltaFormat?: NumberFormat;
+  /** Appended to the delta, e.g. "%" when the delta is a percentage change. */
+  deltaUnit?: string;
   /** "up" (default) means a rise is good; "down" suits resting HR or spend. */
   goodDirection?: "up" | "down";
   /** "inline" (default) keeps the unit on the figure's line; "block" drops it
    *  underneath, which reads better for a long unit like "hours avg". */
   unitPlacement?: "inline" | "block";
+  /** "card" (default) is a tile; "hero" is the page's one big figure, unboxed. */
+  variant?: "card" | "hero";
   class?: string;
 }
 
@@ -28,21 +33,27 @@ const {
   hint,
   delta = null,
   deltaFormat = "fixed1",
+  deltaUnit = "",
   goodDirection = "up",
   unitPlacement = "inline",
+  variant = "card",
   class: className,
 } = Astro.props;
 
 const display = value == null ? "–" : typeof value === "number" ? formatNumber(value, format) : value;
 
-const direction = delta == null || delta === 0 ? "flat" : delta > 0 ? "up" : "down";
 // "Good" is the app's call, not the arrow's: a falling resting HR is green.
-const tone =
-  direction === "flat" ? "flat" : (direction === "up") === (goodDirection === "up") ? "up" : "down";
-const arrow = direction === "up" ? "▲" : direction === "down" ? "▼" : "–";
+const { direction, tone, arrow } = deltaModel(delta ?? 0, goodDirection);
 ---
 
-<div class:list={["om-stat", unitPlacement === "block" && "om-stat--unit-block", className]}>
+<div
+  class:list={[
+    "om-stat",
+    unitPlacement === "block" && "om-stat--unit-block",
+    variant === "hero" && "om-stat--hero",
+    className,
+  ]}
+>
   <div class="om-stat__label">
     <span>{label}</span>
     {hint && (
@@ -55,7 +66,8 @@ const arrow = direction === "up" ? "▲" : direction === "down" ? "▼" : "–";
     {delta != null && (
       <span class:list={["om-stat__delta", `om-stat__delta--${tone}`]}>
         <span aria-hidden="true">{arrow}</span>
-        <span>{formatNumber(Math.abs(delta), deltaFormat)}</span>
+        {direction !== "flat" && <span class="om-sr-only">{direction}</span>}
+        <span>{formatNumber(Math.abs(delta), deltaFormat)}{deltaUnit}</span>
       </span>
     )}
   </div>

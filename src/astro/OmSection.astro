@@ -1,0 +1,27 @@
+---
+export interface Props {
+  title: string;
+  /** Heading id, also the section's aria-labelledby. Derived from the title if omitted. */
+  id?: string;
+  /** A muted line under the heading. */
+  note?: string;
+  class?: string;
+}
+
+const { title, id, note, class: className } = Astro.props;
+const headingId =
+  id ??
+  `${title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")}-heading`;
+---
+
+<section class:list={["om-section", className]} aria-labelledby={headingId}>
+  <header class="om-section__head">
+    <h2 class="om-section__title" id={headingId}>{title}</h2>
+    <slot name="actions" />
+  </header>
+  {note && <p class="om-section__note">{note}</p>}
+  <slot />
+</section>

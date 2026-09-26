@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from "react";
 import { formatNumber, type NumberFormat } from "../core/format.ts";
 import { mountTips } from "../client/hover.ts";
+import { deltaModel } from "../core/delta.ts";
 
 export interface OmStatProps {
   label: string;
@@ -10,10 +11,14 @@ export interface OmStatProps {
   hint?: string;
   delta?: number | null;
   deltaFormat?: NumberFormat;
+  /** Appended to the delta, e.g. "%" when the delta is a percentage change. */
+  deltaUnit?: string;
   goodDirection?: "up" | "down";
   /** "inline" (default) keeps the unit on the figure's line; "block" drops it
    *  underneath, which reads better for a long unit like "hours avg". */
   unitPlacement?: "inline" | "block";
+  /** "card" (default) is a tile; "hero" is the page's one big figure, unboxed. */
+  variant?: "card" | "hero";
   className?: string;
   children?: ReactNode;
 }
@@ -26,8 +31,10 @@ export function OmStat({
   hint,
   delta = null,
   deltaFormat = "fixed1",
+  deltaUnit = "",
   goodDirection = "up",
   unitPlacement = "inline",
+  variant = "card",
   className,
   children,
 }: OmStatProps) {
@@ -38,14 +45,16 @@ export function OmStat({
   }, [hint]);
 
   const display = value == null ? "–" : typeof value === "number" ? formatNumber(value, format) : value;
-  const direction = delta == null || delta === 0 ? "flat" : delta > 0 ? "up" : "down";
-  const tone =
-    direction === "flat" ? "flat" : (direction === "up") === (goodDirection === "up") ? "up" : "down";
-  const arrow = direction === "up" ? "▲" : direction === "down" ? "▼" : "–";
+  const { direction, tone, arrow } = deltaModel(delta ?? 0, goodDirection);
 
   return (
     <div
-      className={["om-stat", unitPlacement === "block" && "om-stat--unit-block", className]
+      className={[
+        "om-stat",
+        unitPlacement === "block" && "om-stat--unit-block",
+        variant === "hero" && "om-stat--hero",
+        className,
+      ]
         .filter(Boolean)
         .join(" ")}
     >
@@ -63,7 +72,11 @@ export function OmStat({
         {delta != null && (
           <span className={`om-stat__delta om-stat__delta--${tone}`}>
             <span aria-hidden="true">{arrow}</span>
-            <span>{formatNumber(Math.abs(delta), deltaFormat)}</span>
+            {direction !== "flat" && <span className="om-sr-only">{direction}</span>}
+            <span>
+              {formatNumber(Math.abs(delta), deltaFormat)}
+              {deltaUnit}
+            </span>
           </span>
         )}
       </div>

@@ -1,7 +1,7 @@
 # omarchy-astro-ui
 
 Shared component library for my personal web apps — `split-log`, `health-board`,
-`household-money` and `bigal`. One token contract, two themes, five components,
+`household-money` and `bigal`. One token contract, two themes, a handful of components,
 and a storyboard that renders every specimen in every theme/mode combination.
 
 The repo is `omarchy-astro-ui` (Astro is the main consumer); the package it
@@ -43,7 +43,7 @@ from GitHub:
 ```jsonc
 // package.json
 "dependencies": {
-  "@omarchy/ui": "github:aleccool213/omarchy-astro-ui#v0.3.0"
+  "@omarchy/ui": "github:aleccool213/omarchy-astro-ui#v0.4.0"
 }
 ```
 
@@ -109,6 +109,10 @@ import { OmStat, OmTimeSeriesChart } from "@omarchy/ui/react";
 | `OmSparkline` | ✅ | ✅ |
 | `OmActivityHeatmap` | ✅ | ✅ |
 | `OmDataList` (stack / rows / table + pagination) | ✅ | ✅ |
+| `OmStackedBar` (part-to-whole bar + legend) | ✅ | ✅ |
+| `OmDelta` | ✅ | ✅ |
+| `OmCallout` | ✅ | ✅ |
+| `OmSection` | ✅ | ✅ |
 | `OmPageHeader` / `OmThemeToggle` / `OmThemeScript` | ✅ | ✅ (script is Astro-only) |
 
 Full prop reference: [`API.md`](API.md).
@@ -129,7 +133,7 @@ the Vercel "Root Directory" at the repository root** — do not set it to
 ## Tests
 
 ```sh
-npm test           # 34 unit tests over the core geometry, scales and pagination
+npm test           # 50 unit tests over the core geometry, scales and pagination
 npm run typecheck  # tsc over the library, including the React renderers
 npm run check      # astro check over the storyboard
 ```

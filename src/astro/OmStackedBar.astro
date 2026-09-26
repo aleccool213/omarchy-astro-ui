@@ -1,0 +1,67 @@
+---
+import type { NumberFormat } from "../core/format.ts";
+import { formatNumber } from "../core/format.ts";
+import { buildShares, type ShareSegment } from "../core/share.ts";
+
+export interface Props {
+  segments: ShareSegment[];
+  title?: string;
+  /** Legend value format. Ignored when `formatValue` is given. */
+  format?: NumberFormat;
+  /** For values `format` cannot express, e.g. currency. */
+  formatValue?: (value: number) => string;
+  legend?: boolean;
+  /** Drop the card: no surface, border or padding. */
+  bare?: boolean;
+  class?: string;
+}
+
+const {
+  segments,
+  title,
+  format = "locale",
+  formatValue,
+  legend = true,
+  bare = false,
+  class: className,
+} = Astro.props;
+
+const model = buildShares(segments);
+const fmt = (v: number) => (formatValue ? formatValue(v) : formatNumber(v, format));
+const summary = model.slices.map((s) => `${s.label} ${s.pct}%`).join(", ");
+const hasNotes = Astro.slots.has("default");
+---
+
+{!model.empty && (
+  <figure class:list={["om-share", bare && "om-share--bare", className]}>
+    {title && <figcaption class="om-share__title">{title}</figcaption>}
+    <div class="om-share__bar" role="img" aria-label={title ? `${title}: ${summary}` : summary}>
+      {model.slices.map((s) => (
+        <span
+          class={`om-share__seg om-slot-${s.slot}`}
+          style={`width:${s.pct}%`}
+          data-om-tip={s.tip ?? `${s.label} · ${s.pct}% · ${fmt(s.value)}`}
+        />
+      ))}
+    </div>
+    {legend && (
+      <ul class="om-share__legend">
+        {model.slices.map((s) => (
+          <li>
+            <span class={`om-share__swatch om-slot-${s.slot}`} aria-hidden="true" />
+            <span>{s.label}</span>
+            <span class="om-share__pct">{s.pct}%</span>
+            <span class="om-share__value">{fmt(s.value)}</span>
+          </li>
+        ))}
+      </ul>
+    )}
+    {hasNotes && <slot />}
+  </figure>
+)}
+
+<script>
+  import { mountTips } from "../client/hover.ts";
+  mountTips();
+  document.addEventListener("astro:page-load", () => mountTips());
+</script>

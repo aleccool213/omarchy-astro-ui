@@ -1,9 +1,32 @@
 # Changelog
 
-Consumers install from a tag — `"@omarchy/ui": "github:aleccool213/omarchy-astro-ui#v0.3.0"`.
+Consumers install from a tag — `"@omarchy/ui": "github:aleccool213/omarchy-astro-ui#v0.4.0"`.
 To take a new release, change the tag in the app's package.json and run
 `npm install`. Changing the string is what makes npm fetch again: an unchanged
 `#main` is treated as already satisfied, locally and in a cached CI build.
+
+## 0.4.0
+
+Found while moving household-money onto the library.
+
+**Added**
+- `OmStackedBar` — one part-to-whole bar with a legend carrying every number.
+  Percentages round by largest remainder so they always sum to 100; `slot`
+  pins a category's colour across bars; a seventh colour throws. Core:
+  `buildShares`.
+- `OmDelta` — the inline "▲ 1.2%" change on its own, for table cells and
+  anywhere a full `OmStat` is too much. Core: `deltaModel`, now shared with
+  `OmStat` so the two never disagree.
+- `OmCallout` — a boxed note with an `info` / `ok` / `warn` / `alert` tone bar.
+- `OmSection` — a titled, `aria-labelledby` page section with an optional
+  note and an `actions` slot.
+- `OmStat` `variant="hero"` — the page's one big figure, unboxed, with the
+  label as an eyebrow and the delta underneath.
+- `OmStat` `deltaUnit` — e.g. `"%"` when the delta is a percentage change.
+
+**Fixed**
+- A delta's direction was only an `aria-hidden` arrow, so screen readers heard
+  "1.2" with no sign. `OmStat` and `OmDelta` now speak "up" / "down".
 
 ## 0.3.0
 

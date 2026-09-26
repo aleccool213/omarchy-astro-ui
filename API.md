@@ -54,6 +54,8 @@ regardless of stylesheet order.
 | `deltaFormat` | `NumberFormat` | `"fixed1"` | |
 | `goodDirection` | `"up" \| "down"` | `"up"` | which sign is green; the arrow still follows the sign |
 | `unitPlacement` | `"inline" \| "block"` | `"inline"` | `block` drops the unit onto its own line under the figure; the delta stays on the figure's line either way |
+| `deltaUnit` | `string` | — | appended to the delta, e.g. `"%"` |
+| `variant` | `"card" \| "hero"` | `"card"` | `hero` is the page's one big figure: no card, the label as an eyebrow, the delta on its own line |
 
 `OmStatGrid` takes `cols` (default 2) and `colsSm` (default 3).
 
@@ -134,6 +136,49 @@ the markup and styles are the same.
 
 **React** takes `items`, `renderRow` and `rowKey` and paginates with real state.
 
+### `OmStackedBar`
+
+| Prop | Type | Default |
+|---|---|---|
+| `segments` | `ShareSegment[]` | — |
+| `title` | `string` | — |
+| `format` | `NumberFormat` | `"locale"` |
+| `formatValue` | `(value: number) => string` | — | overrides `format`, e.g. for currency |
+| `legend` | `boolean` | `true` |
+| `bare` | `boolean` | `false` |
+
+```ts
+interface ShareSegment { key: string; label: string; value: number; slot?: number; tip?: string }
+```
+
+- **Non-positive values are dropped.** A bar cannot draw a negative share; a
+  debt belongs beside the bar, not inside it. An empty set renders nothing.
+- **Percentages sum to exactly 100.0** (largest-remainder at one decimal).
+- **`slot` (1–6) pins a colour** to `--om-series-N`, so a category keeps its
+  colour across bars whose order differs. Unpinned segments take the free
+  slots in order. Two segments may share a slot on purpose; a 1px gap keeps
+  neighbours apart. **A seventh colour throws** — fold the tail into "Other".
+- The legend carries every number, so the per-segment tooltip is a
+  convenience. The default slot renders under the legend; `<ul class="om-share__notes">`
+  is styled for a list of notes.
+
+### `OmDelta`
+
+`value: number | null` (null renders nothing), `format` (default `"fixed1"`),
+`unit`, `goodDirection`. Same model as `OmStat`'s delta: the arrow follows the
+sign, the colour follows `goodDirection`, the direction is spoken.
+
+### `OmCallout`
+
+`title` (a bold lead-in run into the body), `tone`: `"info" | "ok" | "warn" | "alert"`
+(default `info`), content in the default slot / `children`.
+
+### `OmSection`
+
+`title`, `id` (heading id, derived from the title if omitted), `note`, an
+`actions` slot (React: prop) opposite the title. Sets `aria-labelledby`.
+Spacing between sections is `--om-section-gap` (2.5rem).
+
 ### `OmPageHeader` / `OmThemeToggle` / `OmThemeScript`
 
 `OmThemeScript` takes `legacyKey` — an app's pre-library storage key. A saved choice there is copied to `om-theme` once and the old entry removed, so adopting the shared key does not reset anyone's light/dark preference. It also records its key on `<html>`, so every toggle writes to the key the script reads.
@@ -184,6 +229,7 @@ import {
   buildChart, buildHeatmap, paginate, pageWindow, niceScale,
   formatNumber, addDaysISO, mondayOf, todayISO,
   noFlashScript, applyTheme, toggleTheme, THEME_KEY,
+  buildShares, deltaModel,
 } from "@omarchy/ui/core";
 ```
 

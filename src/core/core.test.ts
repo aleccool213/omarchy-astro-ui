@@ -6,6 +6,8 @@ import { buildChart } from "./series.ts";
 import { buildHeatmap } from "./heatmap.ts";
 import { addDaysISO, mondayOf, weekdayIndex, formatTick, formatNumber } from "./format.ts";
 import { noFlashScript } from "./theme.ts";
+import { deltaModel } from "./delta.ts";
+import { buildShares } from "./share.ts";
 
 test("niceScale lands on round steps", () => {
   const s = niceScale(3, 97, 4);
@@ -376,4 +378,54 @@ test("formatNumber clock reads seconds as a pace or duration", () => {
   assert.equal(formatNumber(3725, "clock"), "1:02:05.0");
   assert.equal(formatTick(170, 2, "clock"), "2:50", "whole-second steps drop the tenths");
   assert.equal(formatTick(170.5, 0.5, "clock"), "2:50.5");
+});
+
+test("deltaModel: arrow follows the sign, tone follows goodDirection", () => {
+  assert.deepEqual(deltaModel(2), { direction: "up", tone: "up", arrow: "▲" });
+  assert.deepEqual(deltaModel(-2, "down"), { direction: "down", tone: "up", arrow: "▼" });
+  assert.deepEqual(deltaModel(2, "down"), { direction: "up", tone: "down", arrow: "▲" });
+  assert.deepEqual(deltaModel(0), { direction: "flat", tone: "flat", arrow: "–" });
+});
+
+test("buildShares sums to exactly 100", () => {
+  const m = buildShares([
+    { key: "a", label: "A", value: 1 },
+    { key: "b", label: "B", value: 1 },
+    { key: "c", label: "C", value: 1 },
+  ]);
+  assert.equal(m.slices.reduce((s, x) => s + x.pct * 10, 0), 1000);
+  assert.deepEqual(m.slices.map((s) => s.pct), [33.4, 33.3, 33.3]);
+});
+
+test("buildShares drops non-positive values and reports empty", () => {
+  assert.equal(buildShares([]).empty, true);
+  assert.equal(buildShares([{ key: "a", label: "A", value: -5 }]).empty, true);
+  const m = buildShares([
+    { key: "a", label: "A", value: 30 },
+    { key: "debt", label: "Debt", value: -10 },
+    { key: "b", label: "B", value: 0 },
+  ]);
+  assert.deepEqual(m.slices.map((s) => s.key), ["a"]);
+  assert.equal(m.slices[0].pct, 100);
+});
+
+test("buildShares keeps pinned slots and fills the rest in order", () => {
+  const m = buildShares([
+    { key: "a", label: "A", value: 5, slot: 2 },
+    { key: "b", label: "B", value: 4 },
+    { key: "c", label: "C", value: 3 },
+  ]);
+  assert.deepEqual(m.slices.map((s) => s.slot), [2, 1, 3]);
+  const late = buildShares([
+    { key: "a", label: "A", value: 5 },
+    { key: "b", label: "B", value: 4, slot: 1 },
+    { key: "c", label: "C", value: 3, slot: 1 },
+  ]);
+  assert.deepEqual(late.slices.map((s) => s.slot), [2, 1, 1]);
+});
+
+test("buildShares refuses a seventh colour", () => {
+  const seven = Array.from({ length: 7 }, (_, i) => ({ key: String(i), label: String(i), value: 1 }));
+  assert.throws(() => buildShares(seven), /fold the tail/);
+  assert.throws(() => buildShares([{ key: "a", label: "A", value: 1, slot: 7 }]), /outside/);
 });

@@ -94,3 +94,32 @@
 }
 
 .om-stat__spark { margin-top: var(--om-space-2); color: var(--om-accent); }
+
+/* variant="hero": the one big figure a page leads with. No card — it sits on
+ * the page's own ground, with the label as an eyebrow above it. */
+.om-stat--hero {
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+
+.om-stat--hero .om-stat__label { font-size: var(--om-text-sm); }
+
+.om-stat--hero .om-stat__value {
+  margin-top: var(--om-space-3);
+  font-size: clamp(2.25rem, 7vw, 3.5rem);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  row-gap: var(--om-space-3);
+}
+
+/* Under the figure rather than beside it: at hero size the delta would
+ * otherwise wrap unpredictably on a phone. */
+.om-stat--hero .om-stat__delta {
+  flex-basis: 100%;
+  margin-left: 0;
+  font-family: var(--om-font-ui);
+  font-size: var(--om-text-base);
+  font-weight: 500;
+  letter-spacing: 0;
+}

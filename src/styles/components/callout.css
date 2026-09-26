@@ -1,0 +1,24 @@
+/* OmCallout — a boxed note: a reminder, a warning, a "you're caught up". */
+.om-callout {
+  padding: var(--om-space-4);
+  background: var(--om-surface);
+  border: 1px solid var(--om-line);
+  border-left: 3px solid var(--om-callout-tone, var(--om-accent));
+  border-radius: var(--om-radius);
+  color: var(--om-fg-muted);
+  font-size: var(--om-text-sm);
+}
+
+.om-callout--info { --om-callout-tone: var(--om-accent); }
+.om-callout--ok { --om-callout-tone: var(--om-pos); }
+.om-callout--warn { --om-callout-tone: var(--om-warn); }
+.om-callout--alert { --om-callout-tone: var(--om-neg); }
+
+.om-callout__title {
+  color: var(--om-fg);
+  font-weight: 700;
+}
+
+.om-callout > :first-child { margin-top: 0; }
+.om-callout > :last-child { margin-bottom: 0; }
+.om-callout code { color: var(--om-fg); }

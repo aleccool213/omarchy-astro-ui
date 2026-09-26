@@ -1,0 +1,27 @@
+---
+import type { NumberFormat } from "../core/format.ts";
+import { formatNumber } from "../core/format.ts";
+import { deltaModel } from "../core/delta.ts";
+
+export interface Props {
+  /** Signed change. `null` renders nothing. */
+  value: number | null | undefined;
+  format?: NumberFormat;
+  /** Appended to the figure, e.g. "%" for a percentage change. */
+  unit?: string;
+  /** "up" (default) means a rise is good; "down" suits spend or resting HR. */
+  goodDirection?: "up" | "down";
+  class?: string;
+}
+
+const { value, format = "fixed1", unit = "", goodDirection = "up", class: className } = Astro.props;
+const model = value == null ? null : deltaModel(value, goodDirection);
+---
+
+{model && value != null && (
+  <span class:list={["om-delta", `om-delta--${model.tone}`, className]}>
+    <span aria-hidden="true">{model.arrow}</span>
+    {model.direction !== "flat" && <span class="om-sr-only">{model.direction}</span>}
+    <span>{formatNumber(Math.abs(value), format)}{unit}</span>
+  </span>
+)}

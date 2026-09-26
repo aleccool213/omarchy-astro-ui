@@ -1,0 +1,106 @@
+---
+import Story from "../layouts/Story.astro";
+import Demo from "../components/Demo.astro";
+import OmStat from "@omarchy/ui/astro/OmStat.astro";
+import OmStatGrid from "@omarchy/ui/astro/OmStatGrid.astro";
+import OmDelta from "@omarchy/ui/astro/OmDelta.astro";
+import OmStackedBar from "@omarchy/ui/astro/OmStackedBar.astro";
+import OmCallout from "@omarchy/ui/astro/OmCallout.astro";
+import OmSection from "@omarchy/ui/astro/OmSection.astro";
+
+const cad = new Intl.NumberFormat("en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
+const money = (v: number) => cad.format(v);
+
+const mix = [
+  { key: "reg", label: "TFSA + RRSP", value: 184_200, slot: 1 },
+  { key: "stock", label: "Employer stock", value: 61_900, slot: 2 },
+  { key: "nonreg", label: "Non-registered", value: 22_400, slot: 3 },
+  { key: "cash", label: "Cash", value: 18_750, slot: 5 },
+  { key: "crypto", label: "Crypto", value: 3_100, slot: 4 },
+];
+const six = Array.from({ length: 6 }, (_, i) => ({ key: `s${i}`, label: `Slot ${i + 1}`, value: 6 - i }));
+---
+
+<Story
+  title="Parts"
+  kicker="stacked bar · delta · callout · section · hero"
+  intro="The smaller pieces household-money needed and every app was about to grow on its own: a part-to-whole bar, an inline change, a boxed note, a titled section and a page's one big figure."
+>
+  <Demo
+    title="Hero figure"
+    note="<code>variant=&quot;hero&quot;</code> unboxes an <code>OmStat</code>: the label becomes an eyebrow and the delta drops under the figure. <code>deltaUnit</code> appends a unit to the delta."
+    code={`<OmStat variant="hero" label="As of September 2, 2026" value="$412,380" delta={1.8} deltaUnit="%" />`}
+  >
+    <OmStat variant="hero" label="As of September 2, 2026" value={money(412_380)} delta={1.8} deltaUnit="%" />
+  </Demo>
+
+  <Demo
+    title="Stacked bar"
+    note="Part-to-whole in one bar, with a legend that carries every number, so the tooltip is a convenience rather than the only way in. Percentages round by largest remainder and always sum to 100. <code>slot</code> pins a colour so a category keeps it across bars whose order differs. The default slot renders under the legend."
+    code={`<OmStackedBar title="Household" segments={mix} formatValue={money}>
+  <ul class="om-share__notes"><li>Cash is 6% of this slice.</li></ul>
+</OmStackedBar>`}
+  >
+    <OmStackedBar title="Household" segments={mix} formatValue={money}>
+      <ul class="om-share__notes"><li>Employer stock is 21% of this slice.</li></ul>
+    </OmStackedBar>
+  </Demo>
+
+  <Demo
+    title="Stacked bar — edges"
+    note="All six slots in order; a single segment; a bare bar with no legend. An empty or all-negative set renders nothing, and a seventh colour throws — fold the tail into “Other”."
+  >
+    <div style="display:grid;gap:1rem">
+      <OmStackedBar title="Six slots" segments={six} format="int" />
+      <OmStackedBar title="One segment" segments={[{ key: "only", label: "Cash", value: 1200 }]} />
+      <OmStackedBar bare legend={false} segments={mix} />
+      <OmStackedBar title="Empty — renders nothing" segments={[]} />
+    </div>
+  </Demo>
+
+  <Demo
+    title="Delta"
+    note="The same model as <code>OmStat</code>'s delta: the arrow follows the sign, the colour follows <code>goodDirection</code>, and the direction is spoken to screen readers."
+    code={`<OmDelta value={2.4} unit="%" />
+<OmDelta value={-310} format="locale" goodDirection="down" />`}
+  >
+    <p style="display:flex;gap:1.25rem;flex-wrap:wrap;margin:0">
+      <OmDelta value={2.4} unit="%" />
+      <OmDelta value={-0.7} unit="%" />
+      <OmDelta value={0} unit="%" />
+      <OmDelta value={-310} format="locale" goodDirection="down" />
+      <OmDelta value={null} />
+    </p>
+  </Demo>
+
+  <Demo
+    title="Callout"
+    note="A boxed note with a tone bar. The title runs into the body."
+    code={`<OmCallout tone="warn" title="Add this month’s snapshot.">Latest file is August 3.</OmCallout>`}
+  >
+    <div style="display:grid;gap:0.75rem">
+      <OmCallout title="Heads up.">Info is the default tone.</OmCallout>
+      <OmCallout tone="ok" title="Caught up.">Latest snapshot September 2, 2026.</OmCallout>
+      <OmCallout tone="warn" title="Add this month’s snapshot.">
+        Latest file is August 3, 2026. Drop a new <code>data/snapshots/YYYY-MM-DD.yaml</code>.
+      </OmCallout>
+      <OmCallout tone="alert" title="Build is using fixture data.">Nothing here is real.</OmCallout>
+    </div>
+  </Demo>
+
+  <Demo
+    title="Section"
+    note="A titled block. The heading is a quiet label, and the section is <code>aria-labelledby</code> it. <code>note</code> adds a muted line; the <code>actions</code> slot sits opposite the title."
+    code={`<OmSection title="People" note="Net worth per owner.">
+  <OmStatGrid>…</OmStatGrid>
+</OmSection>`}
+  >
+    <OmSection title="People" note="Net worth per owner, month on month.">
+      <OmStatGrid cols={1} colsSm={3}>
+        <OmStat label="Z" value={money(201_400)} delta={2.1} deltaUnit="%" />
+        <OmStat label="A" value={money(96_300)} delta={-0.4} deltaUnit="%" />
+        <OmStat label="Joint" value={money(114_680)} delta={0} deltaUnit="%" />
+      </OmStatGrid>
+    </OmSection>
+  </Demo>
+</Story>

@@ -1,0 +1,28 @@
+/* Inline signed change: "▲ 1.2%". The colour follows goodDirection, the arrow
+ * follows the sign — the same model OmStat's delta uses (core/delta.ts). */
+.om-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  font-size: var(--om-text-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.om-delta--up { color: var(--om-pos); }
+.om-delta--down { color: var(--om-neg); }
+.om-delta--flat { color: var(--om-fg-muted); }
+
+/* The arrow is aria-hidden, so the direction is spoken from this instead.
+ * Lives here rather than in base.css so components.css consumers get it. */
+.om-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

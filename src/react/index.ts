@@ -3,6 +3,10 @@ export { OmTimeSeriesChart, type OmTimeSeriesChartProps } from "./OmTimeSeriesCh
 export { OmSparkline, type OmSparklineProps } from "./OmSparkline.tsx";
 export { OmActivityHeatmap, type OmActivityHeatmapProps } from "./OmActivityHeatmap.tsx";
 export { OmDataList, type OmDataListProps } from "./OmDataList.tsx";
+export { OmDelta, type OmDeltaProps } from "./OmDelta.tsx";
+export { OmStackedBar, type OmStackedBarProps } from "./OmStackedBar.tsx";
+export { OmCallout, type OmCalloutProps } from "./OmCallout.tsx";
+export { OmSection, type OmSectionProps } from "./OmSection.tsx";
 export { OmThemeToggle } from "./OmThemeToggle.tsx";
 export { OmPageHeader, type OmPageHeaderProps, type OmNavItem } from "./OmPageHeader.tsx";
 export * from "../core/index.ts";

@@ -1,0 +1,14 @@
+---
+export interface Props {
+  /** Bold lead-in, run into the body text. */
+  title?: string;
+  tone?: "info" | "ok" | "warn" | "alert";
+  class?: string;
+}
+
+const { title, tone = "info", class: className } = Astro.props;
+---
+
+<div class:list={["om-callout", `om-callout--${tone}`, className]}>
+  {title && <strong class="om-callout__title">{title}</strong>} <slot />
+</div>
