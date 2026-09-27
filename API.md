@@ -162,7 +162,33 @@ interface ShareSegment { key: string; label: string; value: number; slot?: numbe
   convenience. The default slot renders under the legend; `<ul class="om-share__notes">`
   is styled for a list of notes.
 
-### `OmDelta`
+### `OmDonut`
+
+The same segments as `OmStackedBar`, drawn as a ring with the total in the hole.
+
+| Prop | Type | Default |
+|---|---|---|
+| `segments` | `ShareSegment[]` | — |
+| `title` | `string` | — |
+| `format` | `NumberFormat` | `"locale"` |
+| `formatValue` | `(value: number) => string` | — | overrides `format`, e.g. for currency |
+| `center` | `string` | the formatted total | `""` leaves the hole empty |
+| `centerLabel` | `string` | — | a caption under the centre figure |
+| `thickness` | `number` | `0.28` | ring width as a share of the radius |
+| `size` | `number` | `168` | diameter in px; never wider than its container |
+| `legend` | `boolean` | `true` |
+| `bare` | `boolean` | `false` |
+
+- **Built on `buildShares`**, so a donut and a bar fed the same segments agree
+  on percentages (summing to 100.0), `slot` colours and the six-colour limit.
+- **For one part-to-whole read with a few clearly unequal parts.** Close values
+  or several wholes side by side read better as a stacked bar each; a two-slice
+  donut is a stat.
+- A 2px surface gap separates neighbours; a slice too thin to see is widened
+  to a sliver. The centre figure scales with the ring so it never spills.
+- The legend carries every number, as on the bar. Core: `buildDonut`, `sectorPath`.
+
+
 
 `value: number | null` (null renders nothing), `format` (default `"fixed1"`),
 `unit`, `goodDirection`. Same model as `OmStat`'s delta: the arrow follows the

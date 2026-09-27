@@ -5,6 +5,7 @@ import OmStat from "@omarchy/ui/astro/OmStat.astro";
 import OmStatGrid from "@omarchy/ui/astro/OmStatGrid.astro";
 import OmDelta from "@omarchy/ui/astro/OmDelta.astro";
 import OmStackedBar from "@omarchy/ui/astro/OmStackedBar.astro";
+import OmDonut from "@omarchy/ui/astro/OmDonut.astro";
 import OmCallout from "@omarchy/ui/astro/OmCallout.astro";
 import OmSection from "@omarchy/ui/astro/OmSection.astro";
 
@@ -18,12 +19,19 @@ const mix = [
   { key: "cash", label: "Cash", value: 18_750, slot: 5 },
   { key: "crypto", label: "Crypto", value: 3_100, slot: 4 },
 ];
+const risk = [
+  { key: "r1", label: "1 Cash", value: 20_300, slot: 1 },
+  { key: "r2", label: "2 Conservative", value: 94_500, slot: 2 },
+  { key: "r3", label: "3 Balanced", value: 25_900, slot: 3 },
+  { key: "r4", label: "4 Growth", value: 418_400, slot: 4 },
+  { key: "r5", label: "5 Concentrated", value: 166_300, slot: 5 },
+];
 const six = Array.from({ length: 6 }, (_, i) => ({ key: `s${i}`, label: `Slot ${i + 1}`, value: 6 - i }));
 ---
 
 <Story
   title="Parts"
-  kicker="stacked bar · delta · callout · section · hero"
+  kicker="stacked bar · donut · delta · callout · section · hero"
   intro="The smaller pieces household-money needed and every app was about to grow on its own: a part-to-whole bar, an inline change, a boxed note, a titled section and a page's one big figure."
 >
   <Demo
@@ -55,6 +63,25 @@ const six = Array.from({ length: 6 }, (_, i) => ({ key: `s${i}`, label: `Slot ${
       <OmStackedBar title="One segment" segments={[{ key: "only", label: "Cash", value: 1200 }]} />
       <OmStackedBar bare legend={false} segments={mix} />
       <OmStackedBar title="Empty — renders nothing" segments={[]} />
+    </div>
+  </Demo>
+
+  <Demo
+    title="Donut"
+    note="The same segments as a stacked bar, drawn as a ring with the total in the hole. It shares <code>buildShares</code>, so the percentages, colours and six-colour limit match the bar exactly. Use it for one part-to-whole read at a glance with a few clearly unequal parts; for close values, or to compare several wholes, a stacked bar per whole reads better. <code>center</code> replaces the total; <code>centerLabel</code> captions it."
+    code={`<OmDonut title="Investments by risk" segments={risk} formatValue={money} centerLabel="invested" />`}
+  >
+    <OmDonut title="Investments by risk" segments={risk} formatValue={money} centerLabel="invested" />
+  </Demo>
+
+  <Demo
+    title="Donut — edges"
+    note="A single segment closes the ring; a sliver still shows; <code>center=&quot;&quot;</code> leaves the hole empty; <code>bare</code> drops the card; a thicker ring via <code>thickness</code>."
+  >
+    <div style="display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))">
+      <OmDonut title="One segment" segments={[{ key: "only", label: "Cash", value: 1200 }]} size={120} />
+      <OmDonut title="A sliver" segments={[{ key: "big", label: "Big", value: 10_000 }, { key: "tiny", label: "Tiny", value: 12 }]} format="locale" size={120} center="" />
+      <OmDonut bare segments={mix} formatValue={money} thickness={0.5} size={120} centerLabel="total" />
     </div>
   </Demo>
 

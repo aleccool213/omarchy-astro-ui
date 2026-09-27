@@ -5,6 +5,7 @@ export { OmActivityHeatmap, type OmActivityHeatmapProps } from "./OmActivityHeat
 export { OmDataList, type OmDataListProps } from "./OmDataList.tsx";
 export { OmDelta, type OmDeltaProps } from "./OmDelta.tsx";
 export { OmStackedBar, type OmStackedBarProps } from "./OmStackedBar.tsx";
+export { OmDonut, type OmDonutProps } from "./OmDonut.tsx";
 export { OmCallout, type OmCalloutProps } from "./OmCallout.tsx";
 export { OmSection, type OmSectionProps } from "./OmSection.tsx";
 export { OmThemeToggle } from "./OmThemeToggle.tsx";

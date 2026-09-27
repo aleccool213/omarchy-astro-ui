@@ -1,0 +1,92 @@
+---
+import type { NumberFormat } from "../core/format.ts";
+import { formatNumber } from "../core/format.ts";
+import { buildDonut } from "../core/donut.ts";
+import type { ShareSegment } from "../core/share.ts";
+
+export interface Props {
+  segments: ShareSegment[];
+  title?: string;
+  /** Legend value format. Ignored when `formatValue` is given. */
+  format?: NumberFormat;
+  /** For values `format` cannot express, e.g. currency. */
+  formatValue?: (value: number) => string;
+  /** The figure in the hole. Defaults to the formatted total; pass "" for none. */
+  center?: string;
+  /** A small caption under the centre figure, e.g. "invested". */
+  centerLabel?: string;
+  /** Ring thickness as a share of the radius, 0–1. */
+  thickness?: number;
+  /** Diameter in px. The ring never grows past its container. */
+  size?: number;
+  legend?: boolean;
+  /** Drop the card: no surface, border or padding. */
+  bare?: boolean;
+  class?: string;
+}
+
+const {
+  segments,
+  title,
+  format = "locale",
+  formatValue,
+  center,
+  centerLabel,
+  thickness,
+  size = 168,
+  legend = true,
+  bare = false,
+  class: className,
+} = Astro.props;
+
+const model = buildDonut(segments, { thickness });
+const fmt = (v: number) => (formatValue ? formatValue(v) : formatNumber(v, format));
+const summary = model.slices.map((s) => `${s.label} ${s.pct}%`).join(", ");
+const hole = center ?? (model.empty ? "" : fmt(model.total));
+const hasNotes = Astro.slots.has("default");
+---
+
+{!model.empty && (
+  <figure class:list={["om-donut", "om-share", bare && "om-share--bare", className]}>
+    {title && <figcaption class="om-share__title">{title}</figcaption>}
+    <div class="om-donut__body">
+      <div class="om-donut__ring" style={`--om-donut-size:${size}px;--om-donut-hole:${model.hole}`}>
+        <svg viewBox="0 0 100 100" role="img" aria-label={title ? `${title}: ${summary}` : summary}>
+          {model.arcs.map((a) => (
+            <path
+              fill-rule="evenodd"
+              class={`om-donut__arc om-slot-${a.slot}`}
+              d={a.d}
+              data-om-tip={a.tip ?? `${a.label} · ${a.pct}% · ${fmt(a.value)}`}
+            />
+          ))}
+        </svg>
+        {(hole || centerLabel) && (
+          <div class="om-donut__center" aria-hidden="true">
+            {hole && <span class="om-donut__value">{hole}</span>}
+            {centerLabel && <span class="om-donut__label">{centerLabel}</span>}
+          </div>
+        )}
+      </div>
+      {legend && (
+        <ul class="om-share__legend om-donut__legend">
+          {model.slices.map((s) => (
+            <li>
+              <span class={`om-share__swatch om-slot-${s.slot}`} aria-hidden="true" />
+              <span>{s.label}</span>
+              <span class="om-share__pct">{s.pct}%</span>
+              <span class="om-share__value">{fmt(s.value)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+    {hasNotes && <slot />}
+  </figure>
+)}
+
+<script>
+  import { mountTips } from "../client/hover.ts";
+  mountTips();
+  document.addEventListener("astro:page-load", () => mountTips());
+</script>

@@ -1,0 +1,74 @@
+/* OmDonut — a part-to-whole ring with the total in the hole. Shares the card,
+ * title, legend and slot colours with OmStackedBar (share.css). */
+.om-donut__body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--om-space-5);
+}
+
+.om-donut__ring {
+  position: relative;
+  flex: 0 0 auto;
+  width: min(var(--om-donut-size, 168px), 100%);
+  aspect-ratio: 1;
+  container-type: inline-size;
+}
+
+.om-donut__ring svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* A 2px surface-coloured stroke is the gap between neighbours, so two slices
+ * that share a slot on purpose still read as two parts. */
+.om-donut__arc {
+  stroke: var(--om-surface);
+  stroke-width: 2px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  cursor: default;
+  transition: opacity var(--om-duration) ease;
+}
+
+.om-share--bare .om-donut__arc { stroke: var(--om-bg); }
+
+.om-donut__ring svg:hover .om-donut__arc:not(:hover) { opacity: 0.55; }
+
+.om-donut__arc.om-slot-1 { fill: var(--om-series-1); }
+.om-donut__arc.om-slot-2 { fill: var(--om-series-2); }
+.om-donut__arc.om-slot-3 { fill: var(--om-series-3); }
+.om-donut__arc.om-slot-4 { fill: var(--om-series-4); }
+.om-donut__arc.om-slot-5 { fill: var(--om-series-5); }
+.om-donut__arc.om-slot-6 { fill: var(--om-series-6); }
+
+.om-donut__center {
+  position: absolute;
+  /* The square inscribed in the hole: its half-side is hole × 50% / √2. */
+  inset: calc(50% - var(--om-donut-hole, 0.72) * 35.36%);
+  display: grid;
+  place-content: center;
+  gap: 0.1rem;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* Sized off the ring, so a small or thick donut never spills its total. */
+.om-donut__value {
+  font-size: clamp(0.65rem, calc(var(--om-donut-hole, 0.72) * 14cqi), var(--om-text-lg));
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.om-donut__label {
+  color: var(--om-fg-muted);
+  font-size: clamp(0.55rem, calc(var(--om-donut-hole, 0.72) * 9cqi), var(--om-text-xs));
+}
+
+.om-donut__legend {
+  flex: 1 1 14rem;
+  margin: 0;
+}

@@ -1,9 +1,17 @@
 # Changelog
 
-Consumers install from a tag — `"@omarchy/ui": "github:aleccool213/omarchy-astro-ui#v0.4.0"`.
+Consumers install from a tag — `"@omarchy/ui": "github:aleccool213/omarchy-astro-ui#v0.5.0"`.
 To take a new release, change the tag in the app's package.json and run
 `npm install`. Changing the string is what makes npm fetch again: an unchanged
 `#main` is treated as already satisfied, locally and in a cached CI build.
+
+## 0.5.0
+
+**Added**
+- `OmDonut` — a part-to-whole ring with the total in the hole, for one
+  at-a-glance split with a few clearly unequal parts. Shares `buildShares`
+  with `OmStackedBar`, so the two agree on percentages, colours and the
+  six-colour limit. Astro and React. Core: `buildDonut`, `sectorPath`.
 
 ## 0.4.0
 

@@ -8,6 +8,7 @@ import { addDaysISO, mondayOf, weekdayIndex, formatTick, formatNumber } from "./
 import { noFlashScript } from "./theme.ts";
 import { deltaModel } from "./delta.ts";
 import { buildShares } from "./share.ts";
+import { buildDonut, sectorPath, MIN_SWEEP } from "./donut.ts";
 
 test("niceScale lands on round steps", () => {
   const s = niceScale(3, 97, 4);
@@ -428,4 +429,46 @@ test("buildShares refuses a seventh colour", () => {
   const seven = Array.from({ length: 7 }, (_, i) => ({ key: String(i), label: String(i), value: 1 }));
   assert.throws(() => buildShares(seven), /fold the tail/);
   assert.throws(() => buildShares([{ key: "a", label: "A", value: 1, slot: 7 }]), /outside/);
+});
+
+test("buildDonut agrees with buildShares and closes the ring", () => {
+  const segs = [
+    { key: "a", label: "A", value: 50 },
+    { key: "b", label: "B", value: 30, slot: 4 },
+    { key: "c", label: "C", value: 20 },
+  ];
+  const d = buildDonut(segs);
+  assert.deepEqual(d.slices, buildShares(segs).slices);
+  assert.deepEqual(d.arcs.map((a) => [a.start, a.end]), [[0, 180], [180, 288], [288, 360]]);
+  assert.deepEqual(d.arcs.map((a) => a.slot), [1, 4, 2]);
+});
+
+test("buildDonut draws a lone slice as a full ring", () => {
+  const d = buildDonut([{ key: "a", label: "A", value: 5 }]);
+  assert.equal(d.arcs.length, 1);
+  // Outer and inner circles, filled even-odd: no seams.
+  assert.equal((d.arcs[0].d.match(/M /g) ?? []).length, 2);
+  assert.equal((d.arcs[0].d.match(/L /g) ?? []).length, 0);
+});
+
+test("buildDonut widens a sliver and keeps the ring at 360°", () => {
+  const d = buildDonut([
+    { key: "big", label: "Big", value: 10_000 },
+    { key: "tiny", label: "Tiny", value: 1 },
+  ]);
+  assert.ok(d.arcs[1].end - d.arcs[1].start >= MIN_SWEEP);
+  assert.equal(d.arcs.at(-1)?.end, 360);
+});
+
+test("buildDonut is empty for nothing positive and honours thickness", () => {
+  assert.equal(buildDonut([{ key: "a", label: "A", value: 0 }]).empty, true);
+  assert.equal(buildDonut([{ key: "a", label: "A", value: 1 }], { thickness: 0.4 }).hole, 0.6);
+  assert.deepEqual(buildDonut([]).arcs, []);
+  // Inner radius 50 × (1 − 0.5) = 25 shows up in the inner arc command.
+  assert.match(buildDonut([{ key: "a", label: "A", value: 1 }, { key: "b", label: "B", value: 1 }], { thickness: 0.5 }).arcs[0].d, /A 25 25/);
+});
+
+test("sectorPath uses the large-arc flag past a half turn", () => {
+  assert.match(sectorPath(0, 270, 30), /A 50 50 0 1 1/);
+  assert.match(sectorPath(0, 90, 30), /A 50 50 0 0 1/);
 });
